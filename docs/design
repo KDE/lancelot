@@ -1,0 +1,13 @@
+Plans for the new Lancelot:
+ - Put all models into qml imports so that all Plasma
+   applets can use them. Try to follow the model organization
+   defined by Kickoff to be able to use some models provided by it
+ - Lancelot needs to become a shell that loads QML layouts.
+   This will allow easier implementation for different modes
+   (like cascading popups etc.) without ruining the core code
+   which was the case with L1.
+ - Most of the configuration options can be removed. Instead,
+   provide a few default setups as different layouts. Configuration
+   might need to be per-layout, and not global.
+
+
