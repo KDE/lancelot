@@ -29,7 +29,12 @@
 // including the detection idiom - the poor man's concepts
 
 #define voy_concept inline constexpr bool
+
 #define voy_require(Condition) typename std::enable_if_t<Condition, int> = 0
+
+#define voy_assert_value_type(Type)                                            \
+    static_assert(std::is_same_v<Type, voy::traits::remove_cvref_t<Type>>,     \
+                  "This needs to be a value type")
 
 namespace voy::traits {
 
