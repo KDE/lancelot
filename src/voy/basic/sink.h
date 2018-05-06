@@ -19,54 +19,51 @@
  *   If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef VOY_DSL_NODE_TAGS_H
-#define VOY_DSL_NODE_TAGS_H
+#ifndef VOY_BASIC_SINK_H
+#define VOY_BASIC_SINK_H
 
-namespace voy::dsl {
+// STL
+#include <functional>
 
-// The nodes in the graph are connected only when both the source
-// and a sink exist on a path. The node tags are used to detect whether
-// something is a source or a sink.
+// Self
+#include "../utils.h"
+#include "../dsl/node_tags.h"
 
-struct source_node_tag {};     // node that only emits messages
+using voy::utils::non_copyable;
+using voy::dsl::sink_node_tag;
 
-struct sink_node_tag {};       // node that only receives messages
+namespace voy {
 
-struct transformation_node_tag {}; // middle node that defines transformations
-                                   // this one does not force establishing
-                                   // connectiond
-
-template <typename Cont>
-class continuator_base {
-    voy_assert_value_type(Cont);
-
+template <typename F>
+class sink: non_copyable {
 public:
-    continuator_base(Cont&& continuation)
-        : m_continuation{std::move(continuation)}
+    using node_category = sink_node_tag;
+
+    explicit sink(F function)
+        : m_function{std::move(function)}
     {
+    }
+
+    template <typename T>
+    void operator() (T&& value) const
+    {
+        voy_fwd_invoke(m_function, value);
     }
 
     void init()
     {
-        m_continuation.init();
-    }
-
-    template <typename T>
-    void emit(T&& value)
-    {
-        voy_fwd_invoke(m_continuation, value);
     }
 
     void notify_ended() const
     {
-        m_continuation.notify_ended();
     }
 
-protected:
-    Cont m_continuation;
+private:
+    F m_function;
 };
 
-} // namespace voy::dsl
+
+} // namespace voy
 
 #endif // include guard
 

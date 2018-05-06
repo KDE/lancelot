@@ -61,20 +61,38 @@ public:
 
     template <typename Cont>
     class node: public continuator_base<Cont>, non_copyable {
+        using base = continuator_base<Cont>;
+
+    public:
         node(std::vector<T>&& values, Cont&& cont)
-            : m_values{std::move(values)}
-            , m_continuation{std::move(cont)}
+            : continuator_base<Cont>{std::move(cont)}
+            , m_values{std::move(values)}
         {
         }
 
         void init()
         {
+            base::init();
+
+            for (auto&& value: m_values) {
+                base::emit(std::move(value));
+            }
+
+            m_values.clear();
+
+            base::notify_ended();
         }
 
     private:
         std::vector<T> m_values;
-        Cont m_continuation;
     };
+
+
+    template <typename Cont>
+    auto with_continuation(Cont&& cont) &&
+    {
+        return node(std::move(m_values), voy_fwd(cont));
+    }
 
 
 

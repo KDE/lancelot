@@ -19,11 +19,23 @@
  *   If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <iostream>
+
 #include "basic/values.h"
+#include "basic/sink.h"
 
 int main(int argc, char *argv[])
 {
+    auto cout = [] (auto&& value) {
+        std::cout << "Out: " << voy_fwd(value) << std::endl;
+    };
 
+    auto pipeline =
+        voy::values { 42, 6 }
+            .with_continuation(
+                    voy::sink(cout));
+
+    pipeline.init();
 
     return 0;
 }
