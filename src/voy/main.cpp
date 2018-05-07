@@ -24,18 +24,23 @@
 #include "basic/values.h"
 #include "basic/sink.h"
 
+#include "dsl.h"
+
 int main(int argc, char *argv[])
 {
     auto cout = [] (auto&& value) {
         std::cout << "Out: " << voy_fwd(value) << std::endl;
     };
 
-    auto pipeline =
-        voy::values { 42, 6 }
-            .with_continuation(
-                    voy::sink(cout));
+    auto nodes = std::make_tuple(
+            voy::sink { cout },
+            voy::values { 42, 6 }
+        );
 
-    pipeline.init();
+    auto pipeline = voy::dsl::detail::connect_all(
+            std::move(nodes), std::make_index_sequence<2>());
+
+    pipeline->init();
 
     return 0;
 }

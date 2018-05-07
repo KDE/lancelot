@@ -48,7 +48,7 @@ struct print_types;
 template <typename T>
 voy_concept always_fail = false;
 
-#define voy_fail(Type, Msh) static_assert(voy::traits::always_fail<Type>, Msg>
+#define voy_fail(Type, Msg) static_assert(voy::traits::always_fail<Type>, Msg)
 
 
 // C++20 Stuff
