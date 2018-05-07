@@ -91,7 +91,7 @@ public:
     template <typename Cont>
     auto with_continuation(Cont&& cont) &&
     {
-        return node(std::move(m_values), voy_fwd(cont));
+        return node<Cont>(std::move(m_values), voy_fwd(cont));
     }
 
 

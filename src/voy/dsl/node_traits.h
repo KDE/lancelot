@@ -44,7 +44,7 @@ using node_category = typename remove_cvref_t<Node>::node_category;
 // for rvalues
 template <typename Node>
 using with_continuation_memfn = decltype(
-        std::declval<Node&&>().with_continuation(voy::utils::do_nothing));
+        std::declval<Node&&>().with_continuation(voy::utils::do_nothing{}));
 
 
 // Returns whether the node has the specified tag or not
@@ -88,6 +88,15 @@ voy_concept is_source = is_tagged_with<source_node_tag, Node>;
 template <typename Node>
 voy_concept is_sink = is_tagged_with<sink_node_tag, Node>;
 
+
+// To be used with the detection idiom to check whether a type is
+// a connection_expr or a normal node
+template <typename Graph>
+using connection_expr_tag_definition = typename Graph::connection_expr_tag;
+
+template <typename Node>
+voy_concept is_connection_expr =
+    is_detected_v<connection_expr_tag_definition, Node>;
 
 
 

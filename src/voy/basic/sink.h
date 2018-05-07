@@ -29,10 +29,10 @@
 #include "../utils.h"
 #include "../dsl/node_tags.h"
 
+namespace voy {
+
 using voy::utils::non_copyable;
 using voy::dsl::sink_node_tag;
-
-namespace voy {
 
 template <typename F>
 class sink: non_copyable {

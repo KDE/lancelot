@@ -56,8 +56,11 @@ using non_copyable = disable_adl_::non_copyable;
 // Function object that takes a value, and does nothing,
 // really useful
 
-inline auto do_nothing = [] (auto&& value)
-{
+struct do_nothing {
+    template <typename T>
+    void operator() (T&& value) const
+    {
+    }
 };
 
 

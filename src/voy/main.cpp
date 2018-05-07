@@ -32,13 +32,10 @@ int main(int argc, char *argv[])
         std::cout << "Out: " << voy_fwd(value) << std::endl;
     };
 
-    auto nodes = std::make_tuple(
-            voy::sink { cout },
-            voy::values { 42, 6 }
-        );
+    using voy::dsl::operator|;
 
-    auto pipeline = voy::dsl::detail::connect_all(
-            std::move(nodes), std::make_index_sequence<2>());
+    auto pipeline =
+        voy::values{42, 6} | voy::sink{cout};
 
     pipeline->init();
 
