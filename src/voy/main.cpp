@@ -21,6 +21,7 @@
 
 #include <iostream>
 
+#include "operations/slice.h"
 #include "operations/transform.h"
 #include "operations/filter.h"
 
@@ -88,6 +89,14 @@ int main(int argc, char *argv[])
         | voy::filter([] (const auto& s) {
                 return isupper(s[0]);
             })
+        | voy::sink{cout};
+#endif
+
+#define SLICE_TEST
+#ifdef SLICE_TEST
+    auto pipeline_slice =
+        voy::system_cmd("ping"s, "1.1.1.1"s)
+        | voy::slice(1,3)
         | voy::sink{cout};
 #endif
 
