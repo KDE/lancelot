@@ -19,27 +19,31 @@
  *   If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <iostream>
+#ifndef VOY_TRASNPORT_ASIO_SERVICE_H
+#define VOY_TRASNPORT_ASIO_SERVICE_H
 
-#include "basic/values.h"
-#include "basic/sink.h"
-#include "engine/event_loop.h"
+// Boost
+#include <boost/asio/io_service.hpp>
 
-#include "dsl.h"
+namespace voy::engine::asio {
 
-int main(int argc, char *argv[])
-{
-    auto cout = [] (auto&& value) {
-        std::cout << "Out: " << voy_fwd(value) << std::endl;
-    };
+class service {
+public:
+    static service& instance();
 
-    using voy::dsl::operator|;
+    void run();
 
-    auto pipeline =
-        voy::values{42, 6} | voy::sink{cout};
+    template <typename F>
+    inline void invoke_later(F&& f)
+    {
+        m_asio_service.post(std::forward<F>(f));
+    }
 
-    voy::event_loop::run();
+private:
+    boost::asio::io_service m_asio_service;
+};
 
-    return 0;
-}
+} // namespace voy::engine::asio
+
+#endif // include guard
 

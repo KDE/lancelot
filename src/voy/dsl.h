@@ -31,6 +31,7 @@
 #include "traits.h"
 #include "dsl/node_tags.h"
 #include "dsl/node_traits.h"
+#include "engine/event_loop.h"
 
 namespace voy::dsl {
 
@@ -190,7 +191,9 @@ namespace detail {
                             >
                         >());
 
-                // async call result->init()
+                voy::event_loop::invoke_later([result = result.get()] {
+                        result->init();
+                    });
 
                 return result;
 

@@ -19,27 +19,27 @@
  *   If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <iostream>
+#ifndef VOY_EVENT_LOOP_H
+#define VOY_EVENT_LOOP_H
 
-#include "basic/values.h"
-#include "basic/sink.h"
-#include "engine/event_loop.h"
+#include "asio/service.h"
 
-#include "dsl.h"
+namespace voy::event_loop {
 
-int main(int argc, char *argv[])
+using voy::engine::asio::service;
+
+inline void run()
 {
-    auto cout = [] (auto&& value) {
-        std::cout << "Out: " << voy_fwd(value) << std::endl;
-    };
-
-    using voy::dsl::operator|;
-
-    auto pipeline =
-        voy::values{42, 6} | voy::sink{cout};
-
-    voy::event_loop::run();
-
-    return 0;
+    service::instance().run();
 }
+
+template <typename F>
+inline void invoke_later(F&& f)
+{
+    service::instance().invoke_later(std::forward<F>(f));
+}
+
+} // namespace voy::event_loop
+
+#endif // include guard
 

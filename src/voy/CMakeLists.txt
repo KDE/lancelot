@@ -2,6 +2,8 @@
 add_executable (
     voy_test
     main.cpp
+
+    engine/asio/service.cpp
     )
 
 target_link_libraries (
