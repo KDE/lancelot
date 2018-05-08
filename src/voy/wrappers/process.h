@@ -36,14 +36,15 @@ namespace voy {
 
 using voy::utils::non_copyable;
 
-template <typename ValueHandler, typename ...Args>
+template <typename ValueHandler, typename... Args>
 class process_impl: public non_copyable {
 public:
     using node_category = dsl::source_node_tag;
 
-    explicit process_impl(std::tuple<Args...> command, ValueHandler handler = voy::utils::identity{})
+    explicit process_impl(std::tuple<Args...> command,
+                          ValueHandler handler = voy::utils::identity{})
         : m_command{std::move(command)}
-        , m_handler(handler)
+        , m_handler{std::move(handler)}
     {
     }
 
@@ -60,8 +61,8 @@ public:
             G g;
 
             composition(F f, G g)
-                : f(std::move(f))
-                , g(std::move(g))
+                : f{std::move(f)}
+                , g{std::move(g)}
             {
             }
 
@@ -89,15 +90,15 @@ public:
         };
 
     public:
-        using value_type = decltype(std::declval<ValueHandler>()(std::string()));
+        using value_type = decltype(std::declval<ValueHandler>()(std::string{}));
 
         node(Cont&& cont, ValueHandler&& handler, std::tuple<Args...> command)
-            : m_process(
+            : m_process{
                 std::make_unique<voy::engine::asio::process<composition<Cont, ValueHandler>>>(
-                    composition<Cont, ValueHandler>(std::move(cont), std::move(handler)),
+                    composition<Cont, ValueHandler>{std::move(cont), std::move(handler)},
                     std::move(command)
                 )
-            )
+            }
         {
         }
 
@@ -124,7 +125,7 @@ private:
     ValueHandler m_handler;
 };
 
-template <typename Cmd, typename ...Args>
+template <typename Cmd, typename... Args>
 auto process(Cmd&& cmd, Args&&... args)
 {
     return process_impl(
@@ -132,7 +133,7 @@ auto process(Cmd&& cmd, Args&&... args)
         voy::utils::identity{});
 }
 
-template <typename Cmd, typename ...Args>
+template <typename Cmd, typename... Args>
 auto system_cmd(Cmd&& cmd, Args&&... args)
 {
     return process(boost::process::search_path(voy_fwd(cmd)), voy_fwd(args)...);

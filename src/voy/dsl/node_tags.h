@@ -52,7 +52,7 @@ public:
     }
 
     template <typename T>
-    void emit(T&& value)
+    void emit(T&& value) const
     {
         voy_fwd_invoke(m_continuation, value);
     }

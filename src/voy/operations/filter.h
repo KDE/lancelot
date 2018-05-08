@@ -19,12 +19,10 @@
  *   If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef VOY_BASIC_VALUES_H
-#define VOY_BASIC_VALUES_H
+#ifndef VOY_OPERATIONS_FILTER_H
+#define VOY_OPERATIONS_FILTER_H
 
 // STL
-#include <initializer_list>
-#include <vector>
 #include <functional>
 
 // Self
@@ -37,26 +35,15 @@ namespace voy {
 using voy::utils::non_copyable;
 
 using voy::dsl::continuator_base,
-      voy::dsl::source_node_tag;
+      voy::dsl::transformation_node_tag;
 
-// `values` creates a reactive stream that emits the predefined
-// values as soon as the pipeline is initialized
-
-template <typename T>
-class values: non_copyable {
-    voy_assert_value_type(T);
-
+template <typename Pred>
+class filter {
 public:
-    using node_category = source_node_tag;
+    using node_category = transformation_node_tag;
 
-    explicit values(std::initializer_list<T> values)
-        : m_values{values}
-    {
-    }
-
-    template <typename C>
-    explicit values(C&& values)
-        : m_values{voy_fwd(values)}
+    explicit filter(Pred predicate)
+        : m_predicate{std::move(predicate)}
     {
     }
 
@@ -65,43 +52,41 @@ public:
         using base = continuator_base<Cont>;
 
     public:
-        node(std::vector<T>&& values, Cont&& cont)
-            : base{std::move(cont)}
-            , m_values{std::move(values)}
+        node(Pred predicate, Cont&& continuation)
+            : base{std::move(continuation)}
+            , m_predicate{std::move(predicate)}
         {
         }
 
-        void init()
+        template <typename T>
+        void operator() (T&& value) const
         {
-            base::init();
-
-            for (auto&& value: m_values) {
-                base::emit(std::move(value));
+            if (std::invoke(m_predicate, value)) {
+                base::emit(voy_fwd(value));
             }
-
-            m_values.clear();
-
-            base::notify_ended();
         }
 
     private:
-        std::vector<T> m_values;
+        Pred m_predicate;
     };
-
 
     template <typename Cont>
     auto with_continuation(Cont&& cont) &&
     {
-        return node<Cont>(std::move(m_values), voy_fwd(cont));
+        return node<Cont>(std::move(m_predicate), voy_fwd(cont));
     }
 
 
-
 private:
-    std::vector<T> m_values;
-
+    Pred m_predicate;
 };
 
+
+template <typename Pred>
+auto remove_if(Pred&& pred)
+{
+    return filter{std::not_fn(pred)};
+}
 
 
 } // namespace voy

@@ -47,6 +47,9 @@ template <typename Node>
 using with_continuation_memfn = decltype(
         std::declval<Node&&>().with_continuation(voy::sink<void>{}));
 
+template <typename Node>
+voy_concept has_with_continuation = is_detected_v<with_continuation_memfn, Node>;
+
 
 // Returns whether the node has the specified tag or not
 template <typename Tag, typename Node>

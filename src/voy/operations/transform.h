@@ -19,12 +19,10 @@
  *   If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef VOY_BASIC_VALUES_H
-#define VOY_BASIC_VALUES_H
+#ifndef VOY_OPERATIONS_TRANSFORM_H
+#define VOY_OPERATIONS_TRANSFORM_H
 
 // STL
-#include <initializer_list>
-#include <vector>
 #include <functional>
 
 // Self
@@ -37,26 +35,15 @@ namespace voy {
 using voy::utils::non_copyable;
 
 using voy::dsl::continuator_base,
-      voy::dsl::source_node_tag;
+      voy::dsl::transformation_node_tag;
 
-// `values` creates a reactive stream that emits the predefined
-// values as soon as the pipeline is initialized
-
-template <typename T>
-class values: non_copyable {
-    voy_assert_value_type(T);
-
+template <typename Traf>
+class transform {
 public:
-    using node_category = source_node_tag;
+    using node_category = transformation_node_tag;
 
-    explicit values(std::initializer_list<T> values)
-        : m_values{values}
-    {
-    }
-
-    template <typename C>
-    explicit values(C&& values)
-        : m_values{voy_fwd(values)}
+    explicit transform(Traf transformation)
+        : m_transformation(std::move(transformation))
     {
     }
 
@@ -65,44 +52,46 @@ public:
         using base = continuator_base<Cont>;
 
     public:
-        node(std::vector<T>&& values, Cont&& cont)
-            : base{std::move(cont)}
-            , m_values{std::move(values)}
+        node(Traf transformation, Cont&& continuation)
+            : base{std::move(continuation)}
+            , m_transformation{std::move(transformation)}
         {
         }
 
-        void init()
+        template <typename T>
+        void operator() (T&& value) const
         {
-            base::init();
-
-            for (auto&& value: m_values) {
-                base::emit(std::move(value));
-            }
-
-            m_values.clear();
-
-            base::notify_ended();
+            base::emit(voy_fwd_invoke(m_transformation, value));
         }
 
     private:
-        std::vector<T> m_values;
+        Traf m_transformation;
     };
-
 
     template <typename Cont>
     auto with_continuation(Cont&& cont) &&
     {
-        return node<Cont>(std::move(m_values), voy_fwd(cont));
+        return node<Cont>(std::move(m_transformation), voy_fwd(cont));
     }
 
-
+    template < typename Cont
+             , voy_require(std::is_copy_constructible_v<Traf>)
+             >
+    auto with_continuation(Cont&& cont) const
+    {
+        return node(m_transformation, voy_fwd(cont));
+    }
 
 private:
-    std::vector<T> m_values;
-
+    Traf m_transformation;
 };
 
-
+template <typename Type>
+inline auto cast_to = transform {
+        [] (auto&& value) {
+            return static_cast<Type>(voy_fwd(value));
+        }
+    };
 
 } // namespace voy
 

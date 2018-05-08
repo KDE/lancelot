@@ -21,13 +21,16 @@
 
 #include <iostream>
 
+#include "operations/transform.h"
+#include "operations/filter.h"
+
 #include "basic/delayed.h"
+#include "basic/values.h"
+#include "basic/sink.h"
+
 #include "wrappers/process.h"
 
 #include "engine/event_loop.h"
-
-#include "basic/values.h"
-#include "basic/sink.h"
 
 
 #include "dsl.h"
@@ -54,16 +57,38 @@ int main(int argc, char *argv[])
         voy::system_cmd("task"s) | voy::sink{cout};
 #endif
 
-#define DELAYED_TEST
+// #define DELAYED_TEST
 #ifdef DELAYED_TEST
     auto pipeline_delayed =
         voy::delayed(5s, "I'm finally here"s) | voy::sink{cout};
 #endif
 
-#define DELAYED_VALS_TEST
+// #define DELAYED_VALS_TEST
 #ifdef DELAYED_VALS_TEST
     auto pipeline_delayed_values =
         voy::delayed_values(2s, {"I'm running late"s, "sorry..."s}) | voy::sink{cout};
+#endif
+
+#define FILTER_TEST
+#ifdef FILTER_TEST
+    auto pipeline_filter =
+        voy::system_cmd("task"s)
+        | voy::transform([] (std::string in) {
+                std::transform(std::begin(in), std::end(in),
+                               std::begin(in), toupper);
+                return in;
+            })
+        | voy::sink{cout};
+#endif
+
+#define DELAYED_VALS_TEST
+#ifdef DELAYED_VALS_TEST
+    auto pipeline_delayed_values =
+        voy::delayed_values(2s, {"I'm running late"s, "sorry..."s})
+        | voy::filter([] (const auto& s) {
+                return isupper(s[0]);
+            })
+        | voy::sink{cout};
 #endif
 
     voy::event_loop::run();

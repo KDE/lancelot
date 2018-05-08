@@ -28,21 +28,18 @@
 
 // Self
 #include "utils.h"
-#include "traits.h"
 #include "dsl/node_tags.h"
 #include "dsl/node_traits.h"
 #include "engine/event_loop.h"
 
 namespace voy::dsl {
 
-using namespace voy::traits;
-
 using node_traits::is_connection_expr,
       node_traits::is_node,
       node_traits::is_source,
       node_traits::is_sink,
       node_traits::node_category,
-      node_traits::with_continuation_memfn;
+      node_traits::has_with_continuation;
 
 // We need to be able to store the connected graph paths (pipelines)
 // inside of ordinary classes, so we will return a type-erased pipeline
@@ -228,7 +225,7 @@ namespace detail {
         static_assert(is_node<Right>, "The right needs to be a node");
         static_assert(
                 is_connection_expr<Left> ||
-                is_detected_v<with_continuation_memfn, Left>,
+                has_with_continuation<Left>,
                 "The left node needs to be a connection expression, or to have with_continuation member function");
 
         #define MAKE(Type)                                                     \
@@ -267,7 +264,7 @@ template < typename Left
          , voy_require(is_node<Left> && is_node<Right>)
          , voy_require((
                is_connection_expr<Left> ||
-               is_detected_v<with_continuation_memfn, Left>
+               has_with_continuation<Left>
            ))
          >
 decltype(auto) operator| (Left&& left, Right&& right)
