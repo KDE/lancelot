@@ -21,6 +21,7 @@
 
 #include <iostream>
 
+#include "operations/merge.h"
 #include "operations/slice.h"
 #include "operations/transform.h"
 #include "operations/filter.h"
@@ -70,7 +71,7 @@ int main(int argc, char *argv[])
         voy::delayed_values(2s, {"I'm running late"s, "sorry..."s}) | voy::sink{cout};
 #endif
 
-#define FILTER_TEST
+// #define FILTER_TEST
 #ifdef FILTER_TEST
     auto pipeline_filter =
         voy::system_cmd("task"s)
@@ -82,7 +83,7 @@ int main(int argc, char *argv[])
         | voy::sink{cout};
 #endif
 
-#define DELAYED_VALS_TEST
+// #define DELAYED_VALS_TEST
 #ifdef DELAYED_VALS_TEST
     auto pipeline_delayed_values =
         voy::delayed_values(2s, {"I'm running late"s, "sorry..."s})
@@ -92,11 +93,38 @@ int main(int argc, char *argv[])
         | voy::sink{cout};
 #endif
 
-#define SLICE_TEST
+// #define SLICE_TEST
 #ifdef SLICE_TEST
     auto pipeline_slice =
         voy::system_cmd("ping"s, "1.1.1.1"s)
         | voy::slice(1,3)
+        | voy::sink{cout};
+#endif
+
+#define MERGE_TEST
+#ifdef MERGE_TEST
+    auto pipeline_merge =
+        voy::merge(
+            voy::system_cmd("task"s)
+            | voy::transform([] (std::string in) {
+                    std::transform(std::begin(in), std::end(in),
+                                   std::begin(in), toupper);
+                    return in;
+                })
+            ,
+
+            voy::delayed_values(2s, {"I'm running late"s, "sorry..."s})
+            | voy::filter([] (const auto& s) {
+                    return isupper(s[0]);
+                })
+            ,
+
+            voy::system_cmd("ping"s, "1.1.1.1"s)
+            | voy::slice(1,3)
+        )
+        | voy::transform([] (auto&& s) {
+            return ">> " + voy_fwd(s);
+          })
         | voy::sink{cout};
 #endif
 

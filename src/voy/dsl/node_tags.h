@@ -22,6 +22,12 @@
 #ifndef VOY_DSL_NODE_TAGS_H
 #define VOY_DSL_NODE_TAGS_H
 
+// STL
+#include <utility>
+
+// Self
+#include "../traits.h"
+
 namespace voy::dsl {
 
 // The nodes in the graph are connected only when both the source
