@@ -62,6 +62,29 @@ private:
     F m_function;
 };
 
+template <>
+class sink<void>: non_copyable {
+public:
+    using node_category = sink_node_tag;
+
+    explicit sink()
+    {
+    }
+
+    template <typename T>
+    void operator() (T&& value) const
+    {
+    }
+
+    void init()
+    {
+    }
+
+    void notify_ended() const
+    {
+    }
+};
+
 
 } // namespace voy
 

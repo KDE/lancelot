@@ -53,22 +53,14 @@ namespace disable_adl_ {
 using non_copyable = disable_adl_::non_copyable;
 
 
-// Function object that takes a value, and does nothing,
-// really useful
-
-struct do_nothing {
-    template <typename T>
-    void operator() (T&& value) const
-    {
-    }
-};
-
-
 // Identity function
 
-inline auto identity = [] (auto&& value)
-{
-    return voy_forward(value);
+struct identity {
+    template <typename T>
+    auto operator() (T&& value) const
+    {
+        return voy_fwd(value);
+    }
 };
 
 

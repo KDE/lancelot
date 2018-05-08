@@ -39,6 +39,11 @@ public:
         m_asio_service.post(std::forward<F>(f));
     }
 
+    inline operator boost::asio::io_service& ()
+    {
+        return m_asio_service;
+    }
+
 private:
     boost::asio::io_service m_asio_service;
 };

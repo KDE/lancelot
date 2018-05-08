@@ -21,9 +21,12 @@
 
 #include <iostream>
 
+#include "engine/event_loop.h"
+
 #include "basic/values.h"
 #include "basic/sink.h"
-#include "engine/event_loop.h"
+
+#include "wrappers/process.h"
 
 #include "dsl.h"
 
@@ -34,9 +37,19 @@ int main(int argc, char *argv[])
     };
 
     using voy::dsl::operator|;
+    using namespace std::literals::string_literals;
 
+// #define VALUES_TEST
+#ifdef VALUES_TEST
     auto pipeline =
         voy::values{42, 6} | voy::sink{cout};
+#endif
+
+#define PROCESS_TEST
+#ifdef PROCESS_TEST
+    auto pipeline =
+        voy::system_cmd("task"s) | voy::sink{cout};
+#endif
 
     voy::event_loop::run();
 

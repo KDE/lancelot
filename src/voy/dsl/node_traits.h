@@ -29,6 +29,7 @@
 
 #include "../traits.h"
 #include "../utils.h"
+#include "../basic/sink.h"
 
 namespace voy::dsl::node_traits {
 
@@ -44,7 +45,7 @@ using node_category = typename remove_cvref_t<Node>::node_category;
 // for rvalues
 template <typename Node>
 using with_continuation_memfn = decltype(
-        std::declval<Node&&>().with_continuation(voy::utils::do_nothing{}));
+        std::declval<Node&&>().with_continuation(voy::sink<void>{}));
 
 
 // Returns whether the node has the specified tag or not
