@@ -21,12 +21,14 @@
 
 #include <iostream>
 
+#include "basic/delayed.h"
+#include "wrappers/process.h"
+
 #include "engine/event_loop.h"
 
 #include "basic/values.h"
 #include "basic/sink.h"
 
-#include "wrappers/process.h"
 
 #include "dsl.h"
 
@@ -38,17 +40,30 @@ int main(int argc, char *argv[])
 
     using voy::dsl::operator|;
     using namespace std::literals::string_literals;
+    using namespace std::literals::chrono_literals;
 
 // #define VALUES_TEST
 #ifdef VALUES_TEST
-    auto pipeline =
+    auto pipeline_values =
         voy::values{42, 6} | voy::sink{cout};
 #endif
 
-#define PROCESS_TEST
+// #define PROCESS_TEST
 #ifdef PROCESS_TEST
-    auto pipeline =
+    auto pipeline_process =
         voy::system_cmd("task"s) | voy::sink{cout};
+#endif
+
+#define DELAYED_TEST
+#ifdef DELAYED_TEST
+    auto pipeline_delayed =
+        voy::delayed(5s, "I'm finally here"s) | voy::sink{cout};
+#endif
+
+#define DELAYED_VALS_TEST
+#ifdef DELAYED_VALS_TEST
+    auto pipeline_delayed_values =
+        voy::delayed_values(2s, {"I'm running late"s, "sorry..."s}) | voy::sink{cout};
 #endif
 
     voy::event_loop::run();

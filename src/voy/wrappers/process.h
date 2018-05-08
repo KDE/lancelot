@@ -35,13 +35,11 @@
 namespace voy {
 
 using voy::utils::non_copyable;
-using namespace voy::dsl;
-
 
 template <typename ValueHandler, typename ...Args>
 class process_impl: public non_copyable {
 public:
-    using node_category = source_node_tag;
+    using node_category = dsl::source_node_tag;
 
     explicit process_impl(std::tuple<Args...> command, ValueHandler handler = voy::utils::identity{})
         : m_command{std::move(command)}

@@ -65,7 +65,7 @@ public:
 
     public:
         node(std::vector<T>&& values, Cont&& cont)
-            : continuator_base<Cont>{std::move(cont)}
+            : base{std::move(cont)}
             , m_values{std::move(values)}
         {
         }

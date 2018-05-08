@@ -45,6 +45,7 @@ find_package (
     Boost 1.67 REQUIRED
     COMPONENTS system filesystem # asio and process are header-only
     )
+include_directories (${Boost_INCLUDE_DIR})
 
 
 # Defining the sources
