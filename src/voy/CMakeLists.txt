@@ -1,4 +1,8 @@
 
+include_directories (
+    ../../3rdparty/azmq
+    )
+
 add_executable (
     voy_test
     main.cpp

@@ -31,6 +31,7 @@
 #include "basic/sink.h"
 
 #include "wrappers/process.h"
+#include "wrappers/tcp_service.h"
 
 #include "engine/event_loop.h"
 
@@ -125,6 +126,27 @@ int main(int argc, char *argv[])
         | voy::transform([] (auto&& s) {
             return ">> " + voy_fwd(s);
           })
+        | voy::sink{cout};
+#endif
+
+#define TCP_TEST
+#ifdef TCP_TEST
+    auto pipeline_tcp =
+        voy::tcp::service<>(42042)
+        | voy::filter(
+            [] (const auto& value)
+            {
+                auto copy = *value;
+                boost::algorithm::trim(copy);
+                return !copy.empty();
+            })
+        | voy::transform(
+            [] (auto&& value)
+            {
+                // value.reply((*value) + " (echoed)\n");
+                value.reply("Got a message: "s + *value + "\n"s);
+                return "TCP message: ["s + *value + "]"s;
+            })
         | voy::sink{cout};
 #endif
 

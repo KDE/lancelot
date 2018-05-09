@@ -33,7 +33,7 @@
 #define voy_require(Condition) typename std::enable_if_t<Condition, int> = 0
 
 #define voy_assert_value_type(Type)                                            \
-    static_assert(std::is_same_v<Type, voy::traits::remove_cvref_t<Type>>,     \
+    static_assert(std::is_same_v<Type, ::voy::traits::remove_cvref_t<Type>>,   \
                   "This needs to be a value type")
 
 namespace voy::traits {
@@ -48,7 +48,7 @@ struct print_types;
 template <typename T>
 voy_concept always_fail = false;
 
-#define voy_fail(Type, Msg) static_assert(voy::traits::always_fail<Type>, Msg)
+#define voy_fail(Type, Msg) static_assert(::voy::traits::always_fail<Type>, Msg)
 
 
 // C++20 Stuff
