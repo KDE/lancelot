@@ -27,13 +27,14 @@ set (
     ${CMAKE_MODULE_PATH}
     ${ECM_MODULE_PATH}
     ${ECM_KDE_MODULE_DIR}
+    "${CMAKE_SOURCE_DIR}/cmake/modules"
     )
 
 include (KDEInstallDirs)
 include (KDECMakeSettings)
 
 
-# We can not live without Qt and Boost
+# Qt for the UI
 
 set (REQUIRED_QT_VERSION 5.10.0)
 find_package (
@@ -41,11 +42,20 @@ find_package (
     COMPONENTS Gui Qml Quick
     )
 
+# Boost ASIO for the reactive streams event processing
+
 find_package (
     Boost 1.67 REQUIRED
-    COMPONENTS system filesystem # asio and process are header-only
+    COMPONENTS system filesystem regex # asio and process are header-only
     )
 include_directories (${Boost_INCLUDE_DIR})
+
+# Boost ASIO + ZMQ for the transport
+
+find_package (
+    ZMQ REQUIRED
+    )
+include_directories (${ZMQ_INCLUDE_DIR} "3rdparty/azmq/")
 
 
 # Defining the sources

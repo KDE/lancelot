@@ -32,6 +32,7 @@
 
 #include "wrappers/process.h"
 #include "wrappers/tcp_service.h"
+#include "wrappers/zmq_service.h"
 
 #include "engine/event_loop.h"
 
@@ -102,7 +103,7 @@ int main(int argc, char *argv[])
         | voy::sink{cout};
 #endif
 
-#define MERGE_TEST
+// #define MERGE_TEST
 #ifdef MERGE_TEST
     auto pipeline_merge =
         voy::merge(
@@ -129,7 +130,7 @@ int main(int argc, char *argv[])
         | voy::sink{cout};
 #endif
 
-#define TCP_TEST
+// #define TCP_TEST
 #ifdef TCP_TEST
     auto pipeline_tcp =
         voy::tcp::service<>(42042)
@@ -148,6 +149,27 @@ int main(int argc, char *argv[])
                 return "TCP message: ["s + *value + "]"s;
             })
         | voy::sink{cout};
+#endif
+
+// #define ZMQ_SUB_TEST
+#ifdef ZMQ_SUB_TEST
+    auto pipeline_zmq_sub =
+        voy::zmq::subscriber<>("ipc:///tmp/ivan-zmq-voy-socket"s)
+        | voy::sink{cout};
+#endif
+
+// #define ZMQ_PUB_TEST
+#ifdef ZMQ_PUB_TEST
+    auto pipeline_zmq_pub =
+        voy::system_cmd("ping"s, "1.1.1.1"s)
+        | voy::zmq::publisher<>("ipc:///tmp/ivan-zmq-voy-socket"s);
+#endif
+
+#define ZMQ_PUBSUB_TEST
+#ifdef ZMQ_PUBSUB_TEST
+    auto pipeline_zmq_pub =
+        voy::zmq::subscriber<>("ipc:///tmp/ivan-zmq-voy-socket-in"s)
+        | voy::zmq::publisher<>("ipc:///tmp/ivan-zmq-voy-socket-out"s);
 #endif
 
     voy::event_loop::run();

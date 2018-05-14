@@ -24,6 +24,7 @@
 
 // STL
 #include <memory>
+#include <string>
 
 // Boost
 #include <boost/asio.hpp>
