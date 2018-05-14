@@ -67,12 +67,6 @@ int main(int argc, char *argv[])
         voy::delayed(5s, "I'm finally here"s) | voy::sink{cout};
 #endif
 
-// #define DELAYED_VALS_TEST
-#ifdef DELAYED_VALS_TEST
-    auto pipeline_delayed_values =
-        voy::delayed_values(2s, {"I'm running late"s, "sorry..."s}) | voy::sink{cout};
-#endif
-
 // #define FILTER_TEST
 #ifdef FILTER_TEST
     auto pipeline_filter =
@@ -154,7 +148,7 @@ int main(int argc, char *argv[])
 // #define ZMQ_SUB_TEST
 #ifdef ZMQ_SUB_TEST
     auto pipeline_zmq_sub =
-        voy::zmq::subscriber<>("ipc:///tmp/ivan-zmq-voy-socket"s)
+        voy::zmq::subscriber<>("ipc:///tmp/ivan-zmq-voy-socket-in"s)
         | voy::sink{cout};
 #endif
 
@@ -162,10 +156,10 @@ int main(int argc, char *argv[])
 #ifdef ZMQ_PUB_TEST
     auto pipeline_zmq_pub =
         voy::system_cmd("ping"s, "1.1.1.1"s)
-        | voy::zmq::publisher<>("ipc:///tmp/ivan-zmq-voy-socket"s);
+        | voy::zmq::publisher<>("ipc:///tmp/ivan-zmq-voy-socket-out"s);
 #endif
 
-#define ZMQ_PUBSUB_TEST
+// #define ZMQ_PUBSUB_TEST
 #ifdef ZMQ_PUBSUB_TEST
     auto pipeline_zmq_pub =
         voy::zmq::subscriber<>("ipc:///tmp/ivan-zmq-voy-socket-in"s)
