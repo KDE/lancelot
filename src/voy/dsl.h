@@ -259,13 +259,9 @@ namespace detail {
 
 template < typename Left
          , typename Right
-         , typename LeftVal  = traits::remove_cvref_t<Left>
-         , typename RightVal = traits::remove_cvref_t<Right>
-         , voy_require(is_node<Left> && is_node<Right>)
-         , voy_require((
-               is_connection_expr<Left> ||
-               has_with_continuation<Left>
-           ))
+         , voy_require(
+               is_node<Left> && is_node<Right>
+           )
          >
 decltype(auto) operator| (Left&& left, Right&& right)
 {

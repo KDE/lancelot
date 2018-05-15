@@ -16,6 +16,7 @@ foreach (
         ZMQ_SUB_TEST
         ZMQ_PUB_TEST
         ZMQ_PUBSUB_TEST
+        ASSOCIATIVITY_TEST
         )
 
     message("This is a test: ${test_name}")
@@ -43,9 +44,50 @@ foreach (
 
 endforeach()
 
+foreach (
+        test_name IN ITEMS
+        TEST_BACKEND
+        TEST_FRONTEND
+        )
+
+    message("This is a multiprocess test: ${test_name}")
+
+    add_executable (
+        "voy_test_multiprocess_${test_name}"
+        tests_multiprocess.cpp
+
+        engine/asio/service.cpp
+        )
+
+    target_compile_definitions (
+        "voy_test_multiprocess_${test_name}"
+        PUBLIC "-D${test_name}"
+        )
+
+    target_link_libraries (
+        "voy_test_multiprocess_${test_name}"
+        ${Boost_SYSTEM_LIBRARY}
+        ${Boost_FILESYSTEM_LIBRARY}
+        ${Boost_REGEX_LIBRARY}
+        ${ZMQ_LIBRARIES}
+        -pthread
+        )
+
+endforeach()
+
 # add_executable (
-#     voy_test
-#     main.cpp
+#     voy_test_process_1
+#     tests_multiprocess.cpp
 #
 #     engine/asio/service.cpp
 #     )
+#
+# target_link_libraries (
+#     voy_test_process_1
+#     ${Boost_SYSTEM_LIBRARY}
+#     ${Boost_FILESYSTEM_LIBRARY}
+#     ${Boost_REGEX_LIBRARY}
+#     ${ZMQ_LIBRARIES}
+#     -pthread
+#     )
+

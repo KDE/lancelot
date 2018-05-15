@@ -25,6 +25,7 @@
 #include "operations/slice.h"
 #include "operations/transform.h"
 #include "operations/filter.h"
+#include "operations/identity.h"
 
 #include "basic/delayed.h"
 #include "basic/values.h"
@@ -121,6 +122,7 @@ int main(int argc, char *argv[])
         | voy::transform([] (auto&& s) {
             return ">> " + voy_fwd(s);
           })
+        | voy::identity<>()
         | voy::sink{cout};
 #endif
 
@@ -164,6 +166,30 @@ int main(int argc, char *argv[])
     auto pipeline_zmq_pub =
         voy::zmq::subscriber<>("ipc:///tmp/ivan-zmq-voy-socket-in"s)
         | voy::zmq::publisher<>("ipc:///tmp/ivan-zmq-voy-socket-out"s);
+#endif
+
+// #define ASSOCIATIVITY_TEST
+#ifdef ASSOCIATIVITY_TEST
+    auto pipeline_associativity =
+        voy::delayed_values(2s, {"I'm running late"s, "sorry..."s})
+        | ( voy::filter([] (const auto& s) {
+                return isupper(s[0]);
+            })
+          | voy::filter([] (const auto& s) {
+                return isupper(s[0]);
+            })
+          )
+        | ( voy::transform([] (auto s) {
+                std::transform(s.begin(), s.end(), s.begin(), toupper);
+                return s;
+            })
+        | voy::filter([] (const auto& s) {
+                return isupper(s[0]);
+            })
+          )
+        | voy::sink{cout};
+
+
 #endif
 
     voy::event_loop::run();
