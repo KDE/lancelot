@@ -1,0 +1,12 @@
+
+In order to build this repository, you need to clone the following submodules
+(as the current KDE git infrastructure does not support submodules)
+
+[submodule "3rdparty/azmq"]
+	path = 3rdparty/azmq
+	url = https://github.com/zeromq/azmq
+
+You can do it by executing the following from the repository root:
+
+    mkdir 3rdparty
+    git clone https://github.com/zeromq/azmq 3rdparty/azmq
