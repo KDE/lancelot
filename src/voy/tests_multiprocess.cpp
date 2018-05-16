@@ -40,6 +40,8 @@
 #include "dsl.h"
 #include "dsl/multiprocess.h"
 
+#include "../utils/debug.h"
+
 using namespace std::literals::string_literals;
 using namespace std::literals::chrono_literals;
 
@@ -63,20 +65,25 @@ int main(int argc, char *argv[])
 
     auto pipeline = voy_multiprocess
 
-          voy::system_cmd("ping"s, "1.1.1.1"s)
-        | voy::transform([] (std::string value) {
+          voy::system_cmd("ping"s, "localhost"s)
+        | voy::transform([] (std::string&& value) {
               std::transform(value.begin(), value.end(), value.begin(), toupper);
               return value;
           })
         | voy_bridge(to_backend)
-        | voy::transform([] (const std::string& value) {
-              return std::string(
-                      std::find(value.begin(), value.end(), ':'),
-                      value.end());
+        | voy::transform([] (std::string&& value) {
+              const auto pos = value.find_last_of('=');
+              return std::make_pair(std::move(value), pos);
+          })
+        | voy::transform([] (std::pair<std::string, size_t>&& pair) {
+              auto [ value, pos ] = pair;
+              return pos == std::string::npos
+                          ? std::move(value)
+                          : std::string(value.cbegin() + pos + 1, value.cend());
           })
         | voy_bridge(from_backend)
-        | voy::transform([] (const std::string& value) {
-              return " >> " + value + " << ";
+        | voy::filter([] (const std::string& value) {
+              return value < "0.045"s;
           })
         | voy::sink{cout};
 

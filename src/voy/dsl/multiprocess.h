@@ -75,7 +75,7 @@ inline auto multiprocess_pipeline()
     auto BridgeName##_send()                                                   \
     {                                                                          \
         return voy::zmq::publisher<>(                                          \
-            std::string("ipc:///tmp/voy-zmq-bridge-" #BridgeName));            \
+            std::string("ipc:///tmp/voy-zmq-bridge-" #BridgeName "-ivan"));    \
     }                                                                          \
                                                                                \
     auto BridgeName##_receive()                                                \
@@ -92,7 +92,7 @@ inline auto multiprocess_pipeline()
     auto BridgeName##_receive()                                                \
     {                                                                          \
         return voy::zmq::subscriber<>(                                         \
-            std::string("ipc:///tmp/voy-zmq-bridge-" #BridgeName));            \
+            std::string("ipc:///tmp/voy-zmq-bridge-" #BridgeName "-ivan"));    \
     }
 
 #define voy_bridge(BridgeName) BridgeName##_send() || BridgeName##_receive()
