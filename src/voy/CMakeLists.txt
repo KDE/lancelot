@@ -46,8 +46,9 @@ endforeach()
 
 foreach (
         test_name IN ITEMS
-        TEST_BACKEND
         TEST_FRONTEND
+        TEST_BACKEND_1
+        TEST_BACKEND_2
         )
 
     message("This is a multiprocess test: ${test_name}")
