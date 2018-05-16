@@ -46,12 +46,21 @@ using namespace std::literals::string_literals;
 using namespace std::literals::chrono_literals;
 
 
-#ifndef TEST_BACKEND
-voy_declare_bridge_out(to_backend)
-voy_declare_bridge_in(from_backend)
-#else
-voy_declare_bridge_in(to_backend)
-voy_declare_bridge_out(from_backend)
+#if defined TEST_FRONTEND
+voy_declare_bridge_out(frontend_to_backend_1)
+voy_declare_bridge_ignored(backend_1_to_backend_2)
+voy_declare_bridge_in(backend_2_to_frontend)
+
+#elif defined TEST_BACKEND_1
+voy_declare_bridge_in(frontend_to_backend_1)
+voy_declare_bridge_out(backend_1_to_backend_2)
+voy_declare_bridge_ignored(backend_2_to_frontend)
+
+#else // TEST_BACKEND_2
+voy_declare_bridge_ignored(frontend_to_backend_1)
+voy_declare_bridge_in(backend_1_to_backend_2)
+voy_declare_bridge_out(backend_2_to_frontend)
+
 #endif
 
 
@@ -62,15 +71,15 @@ int main(int argc, char *argv[])
     };
 
     using voy::dsl::operator|;
+    using voy::dsl::operator||;
 
-    auto pipeline = voy_multiprocess
-
-          voy::system_cmd("ping"s, "localhost"s)
+    auto pipeline =
+        voy::system_cmd("ping"s, "localhost"s)
         | voy::transform([] (std::string&& value) {
               std::transform(value.begin(), value.end(), value.begin(), toupper);
               return value;
           })
-        | voy_bridge(to_backend)
+        | voy_bridge(frontend_to_backend_1)
         | voy::transform([] (std::string&& value) {
               const auto pos = value.find_last_of('=');
               return std::make_pair(std::move(value), pos);
@@ -81,10 +90,11 @@ int main(int argc, char *argv[])
                           ? std::move(value)
                           : std::string(value.cbegin() + pos + 1, value.cend());
           })
-        | voy_bridge(from_backend)
+        | voy_bridge(backend_1_to_backend_2)
         | voy::filter([] (const std::string& value) {
-              return value < "0.045"s;
+              return value < "0.145"s;
           })
+        | voy_bridge(backend_2_to_frontend)
         | voy::sink{cout};
 
     voy::event_loop::run();

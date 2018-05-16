@@ -65,11 +65,11 @@ namespace detail {
     voy_concept is_node()
     {
         if constexpr (!is_detected_v<node_category, Node>) {
-            voy_fail(Node, "No category specified for the node");
+            // voy_fail(Node, "No category specified for the node");
             return false;
 
         } else if constexpr (std::is_same_v<void, DetectedCategory>) {
-            voy_fail(Node, "Category is void, which means we already have a complete graph path");
+            // voy_fail(Node, "Category is void, which means we already have a complete graph path");
             return false;
 
         } else {
