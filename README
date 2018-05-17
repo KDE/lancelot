@@ -1,6 +1,7 @@
 
-In order to build this repository, you need to clone the following submodules
-(as the current KDE git infrastructure does not support submodules)
+In order to build this repository, you need to clone the
+following submodules (as the current KDE git infrastructure
+does not support submodules)
 
 [submodule "3rdparty/azmq"]
 	path = 3rdparty/azmq
@@ -10,3 +11,10 @@ You can do it by executing the following from the repository root:
 
     mkdir 3rdparty
     git clone https://github.com/zeromq/azmq 3rdparty/azmq
+
+
+The Boost libraries are not provided in the 3rdparty directory,
+the build relies on you having Boost 1.67 or greater installed
+on your system. If Boost is not found, you can pass a custom
+BOOST_ROOT value to cmake.
+

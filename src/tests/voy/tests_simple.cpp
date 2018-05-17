@@ -21,24 +21,24 @@
 
 #include <iostream>
 
-#include "operations/merge.h"
-#include "operations/slice.h"
-#include "operations/transform.h"
-#include "operations/filter.h"
-#include "operations/identity.h"
+#include <voy/operations/merge.h>
+#include <voy/operations/slice.h>
+#include <voy/operations/transform.h>
+#include <voy/operations/filter.h>
+#include <voy/operations/identity.h>
 
-#include "basic/delayed.h"
-#include "basic/values.h"
-#include "basic/sink.h"
+#include <voy/basic/delayed.h>
+#include <voy/basic/values.h>
+#include <voy/basic/sink.h>
 
-#include "wrappers/process.h"
-#include "wrappers/tcp_service.h"
-#include "wrappers/zmq_service.h"
+#include <voy/wrappers/process.h>
+#include <voy/wrappers/tcp_service.h>
+#include <voy/wrappers/zmq_service.h>
 
-#include "engine/event_loop.h"
+#include <voy/engine/event_loop.h>
 
+#include <voy/dsl.h>
 
-#include "dsl.h"
 
 int main(int argc, char *argv[])
 {

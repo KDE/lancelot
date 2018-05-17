@@ -24,7 +24,7 @@
 
 #include "../operations/identity.h"
 
-#include "dsl.h"
+#include "../dsl.h"
 
 namespace voy::dsl {
 

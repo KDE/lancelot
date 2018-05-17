@@ -4,7 +4,6 @@ include_directories (
     )
 
 add_subdirectory (voy)
-
-
+add_subdirectory (tests/voy)
 
 
