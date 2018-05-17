@@ -50,36 +50,43 @@ using namespace std::literals::chrono_literals;
 
 
 #if defined TEST_FRONTEND
-voy_declare_bridge_out(frontend_to_backend_1)
+voy_declare_bridge_spread(frontend_to_backend_1)
 voy_declare_bridge_ignored(backend_1_to_backend_2)
 voy_declare_bridge_in(backend_2_to_frontend)
 
 #elif defined TEST_BACKEND_1
-voy_declare_bridge_in(frontend_to_backend_1)
-voy_declare_bridge_out(backend_1_to_backend_2)
+voy_declare_bridge_accept(frontend_to_backend_1)
+voy_declare_bridge_post(backend_1_to_backend_2)
 voy_declare_bridge_ignored(backend_2_to_frontend)
 
 #else // TEST_BACKEND_2
 voy_declare_bridge_ignored(frontend_to_backend_1)
-voy_declare_bridge_in(backend_1_to_backend_2)
+voy_declare_bridge_collect(backend_1_to_backend_2)
 voy_declare_bridge_out(backend_2_to_frontend)
 
 #endif
 
 inline std::string pid_s()
 {
-    return "       \tpid:" + std::to_string(getpid());
+    return " // pid:" + debug::colorize(getpid());
 }
 
 int main(int argc, char *argv[])
 {
+    using voy::dsl::operator|;
+    using voy::dsl::operator||;
+    using debug::color;
+
     auto cout = [] (auto&& value) {
         std::cout << "Out: " << voy_fwd(value) << std::endl;
     };
 
-    using voy::dsl::operator|;
-    using voy::dsl::operator||;
-    using debug::color;
+    auto append_pid = voy::transform([] (std::string&& value) {
+                debug::out(color::gray) << "sending " << value << " from " << pid_s();
+                return std::move(value) + pid_s();
+            });
+
+    debug::out(color::red) << pid_s();
 
     auto pipeline =
         voy::system_cmd("ping"s, "localhost"s)
@@ -88,7 +95,9 @@ int main(int argc, char *argv[])
               debug::out(color::gray) << value << pid_s();
               return value;
           })
+        | std::move(append_pid)
         | voy_bridge(frontend_to_backend_1)
+
         | voy::transform([] (std::string&& value) {
               const auto pos = value.find_last_of('=');
               debug::out(color::gray) << value << " found = at " << pos << pid_s();
@@ -101,15 +110,16 @@ int main(int argc, char *argv[])
                           ? std::move(value)
                           : std::string(value.cbegin() + pos + 1, value.cend());
           })
+        | std::move(append_pid)
         | voy_bridge(backend_1_to_backend_2)
-        | voy::transform([] (std::string&& value) {
-              return value + pid_s();
-          })
+
         | voy::filter([] (const std::string& value) {
               debug::out(color::gray) << value << " - filtering" << pid_s();
               return value < "0.145"s;
           })
+        | std::move(append_pid)
         | voy_bridge(backend_2_to_frontend)
+
         | voy::sink{cout};
 
     voy::event_loop::run();

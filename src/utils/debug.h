@@ -69,6 +69,17 @@ struct pretty_ptr {
 
 
 template <typename T>
+std::string colorize(const T& value)
+{
+    short hash = ((intptr_t)value) % 8;
+    std::string basecol(DEBUG_COLOR_GRAY);
+    basecol[3] = '0' + hash;
+
+    return basecol + std::to_string(value) + COLOR_RESET;
+}
+
+
+template <typename T>
 std::ostream& operator<< (std::ostream& out, const pretty_ptr<T>& pretty)
 {
     short ptrhash = ((intptr_t)pretty.ptr / 32) % 8;

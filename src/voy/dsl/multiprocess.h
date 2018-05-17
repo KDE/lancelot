@@ -110,8 +110,8 @@ auto operator||(Left&& left, Right&& right)
 #define voy_declare_bridge_out(BridgeName)                                     \
     auto BridgeName##_send()                                                   \
     {                                                                          \
-        return voy::zmq::publisher<>(                                          \
-            std::string("ipc:///tmp/voy-zmq-bridge-" #BridgeName "-ivan"));    \
+        using namespace voy::zmq;                                              \
+        return publisher<>(ipc(#BridgeName));                                  \
     }                                                                          \
                                                                                \
     auto BridgeName##_receive()                                                \
@@ -127,8 +127,56 @@ auto operator||(Left&& left, Right&& right)
                                                                                \
     auto BridgeName##_receive()                                                \
     {                                                                          \
-        return voy::zmq::subscriber<>(                                         \
-            std::string("ipc:///tmp/voy-zmq-bridge-" #BridgeName "-ivan"));    \
+        using namespace voy::zmq;                                              \
+        return subscriber<>(ipc(#BridgeName));                                 \
+    }
+
+#define voy_declare_bridge_spread(BridgeName)                                  \
+    auto BridgeName##_send()                                                   \
+    {                                                                          \
+        using namespace voy::zmq;                                              \
+        return publisher<policy::spread>(ipc(#BridgeName));                    \
+    }                                                                          \
+                                                                               \
+    auto BridgeName##_receive()                                                \
+    {                                                                          \
+        return voy::identity<>();                                              \
+    }
+
+#define voy_declare_bridge_accept(BridgeName)                                  \
+    auto BridgeName##_send()                                                   \
+    {                                                                          \
+        return voy::identity<>();                                              \
+    }                                                                          \
+                                                                               \
+    auto BridgeName##_receive()                                                \
+    {                                                                          \
+        using namespace voy::zmq;                                              \
+        return subscriber<policy::spread>(ipc(#BridgeName));                   \
+    }
+
+#define voy_declare_bridge_post(BridgeName)                                    \
+    auto BridgeName##_send()                                                   \
+    {                                                                          \
+        using namespace voy::zmq;                                              \
+        return publisher<policy::collect>(ipc(#BridgeName));                   \
+    }                                                                          \
+                                                                               \
+    auto BridgeName##_receive()                                                \
+    {                                                                          \
+        return voy::identity<>();                                              \
+    }
+
+#define voy_declare_bridge_collect(BridgeName)                                 \
+    auto BridgeName##_send()                                                   \
+    {                                                                          \
+        return voy::identity<>();                                              \
+    }                                                                          \
+                                                                               \
+    auto BridgeName##_receive()                                                \
+    {                                                                          \
+        using namespace voy::zmq;                                              \
+        return subscriber<policy::collect>(ipc(#BridgeName));                  \
     }
 
 #define voy_declare_bridge_ignored(BridgeName)                                 \

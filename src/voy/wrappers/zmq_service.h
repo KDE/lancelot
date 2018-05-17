@@ -38,6 +38,8 @@
 #include "../dsl/node_traits.h"
 #include "../engine/asio/service.h"
 
+#include "../../utils/debug.h"
+
 namespace voy::zmq {
 
 using voy::utils::non_copyable;
@@ -45,10 +47,93 @@ using voy::utils::non_copyable;
 using voy::dsl::continuator_base,
       voy::dsl::source_node_tag;
 
-template <typename T = std::string>
-class subscriber: non_copyable {
-    voy_assert_value_type(T);
+namespace policy {
 
+    struct spread {
+        template <typename Socket>
+        static void publisher_init(Socket& socket, const std::string& path)
+        {
+            debug::out() << "spread/publisher binding to " << path;
+            socket.bind(path);
+        }
+
+        template <typename Socket>
+        static void subscriber_init(Socket& socket, const std::string& path)
+        {
+            debug::out() << "spread/subscriber connecting to " << path;
+            socket.connect(path);
+            socket.set_option(azmq::socket::subscribe(""));
+        }
+    };
+
+    struct collect {
+        template <typename Socket>
+        static void publisher_init(Socket& socket, const std::string& path)
+        {
+            debug::out() << "collect/publisher connecting to " << path;
+            socket.connect(path);
+        }
+
+        template <typename Socket>
+        static void subscriber_init(Socket& socket, const std::string& path)
+        {
+            debug::out() << "collect/publisher binding to " << path;
+            socket.bind(path);
+            socket.set_option(azmq::socket::subscribe(""));
+        }
+    };
+}
+
+
+std::string ipc(const std::string& id)
+{
+    static const char *userenv = getenv("USER");
+    std::string user = userenv ? userenv : "unknown-user";
+    return "ipc:///tmp/voy-zmq-" + std::string(user) + "-" + id;
+}
+
+
+template <typename Policy = policy::spread>
+class publisher: non_copyable {
+public:
+    using node_category = sink_node_tag;
+
+    explicit publisher(std::string path)
+        : m_path{std::move(path)}
+    {
+    }
+
+    template <typename Msg>
+    void operator()(Msg&& value) const
+    {
+        // std::cerr << "Sending... " << value << std::endl;
+        if (m_socket) {
+            m_socket->async_send(voy_fwd(azmq::message(value)),
+                    [] (auto, auto) {});
+        }
+    }
+
+    void init()
+    {
+        m_socket = std::make_unique<azmq::pub_socket>(engine::asio::service::instance());
+
+        Policy::publisher_init(*m_socket, m_path);
+    }
+
+    void notify_ended() const
+    {
+        m_socket.reset();
+    }
+
+private:
+    std::string m_path;
+    mutable std::unique_ptr<azmq::pub_socket> m_socket;
+
+};
+
+
+template <typename Policy = policy::spread>
+class subscriber: non_copyable {
 public:
     using node_category = source_node_tag;
 
@@ -68,8 +153,7 @@ public:
                 , socket(engine::asio::service::instance())
             {
                 std::cerr << "AZMQ: Connecting to " << path << " ...\n";
-                socket.connect(path);
-                socket.set_option(azmq::socket::subscribe(""));
+                Policy::subscriber_init(socket, path);
 
                 read_next();
             }
@@ -119,46 +203,6 @@ private:
     std::string m_path;
 
 };
-
-template <typename T = std::string>
-class publisher: non_copyable {
-    voy_assert_value_type(T);
-
-public:
-    using node_category = sink_node_tag;
-
-    explicit publisher(std::string path)
-        : m_path{std::move(path)}
-    {
-    }
-
-    template <typename Msg>
-    void operator()(Msg&& value) const
-    {
-        // std::cerr << "Sending... " << value << std::endl;
-        if (m_socket) {
-            m_socket->async_send(voy_fwd(azmq::message(value)),
-                    [] (auto, auto) {});
-        }
-    }
-
-    void init()
-    {
-        m_socket = std::make_unique<azmq::pub_socket>(engine::asio::service::instance());
-        m_socket->bind(m_path);
-    }
-
-    void notify_ended() const
-    {
-        m_socket.reset();
-    }
-
-private:
-    std::string m_path;
-    mutable std::unique_ptr<azmq::pub_socket> m_socket;
-
-};
-
 
 } // namespace voy::zmq
 
