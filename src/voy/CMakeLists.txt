@@ -11,6 +11,3 @@ set (
     PARENT_SCOPE
     )
 
-message ("Voy source dir: ${VOY_SOURCE_DIR}")
-message ("Voy sources:    ${VOY_SOURCES}")
-

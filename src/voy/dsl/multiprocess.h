@@ -190,6 +190,17 @@ auto operator||(Left&& left, Right&& right)
         return voy::identity<>();                                              \
     }
 
+#define voy_declare_bridge_ignored(BridgeName)                                 \
+    auto BridgeName##_send()                                                   \
+    {                                                                          \
+        return voy::identity<>();                                              \
+    }                                                                          \
+                                                                               \
+    auto BridgeName##_receive()                                                \
+    {                                                                          \
+        return voy::identity<>();                                              \
+    }
+
 #define voy_bridge(BridgeName) BridgeName##_send() || BridgeName##_receive()
 #define voy_multiprocess voy::dsl::multiprocess_pipeline() ||
 
