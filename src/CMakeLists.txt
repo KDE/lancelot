@@ -6,4 +6,6 @@ include_directories (
 add_subdirectory (voy)
 add_subdirectory (tests/voy)
 
+add_subdirectory (blade)
+
 

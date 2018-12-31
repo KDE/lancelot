@@ -95,7 +95,7 @@ int main(int argc, char *argv[])
               debug::out(color::gray) << value << pid_s();
               return value;
           })
-        | std::move(append_pid)
+        | append_pid
         | voy_bridge(frontend_to_backend_1)
 
         | voy::transform([] (std::string&& value) {
@@ -104,20 +104,20 @@ int main(int argc, char *argv[])
               return std::make_pair(std::move(value), pos);
           })
         | voy::transform([] (std::pair<std::string, size_t>&& pair) {
-              auto [ value, pos ] = pair;
+              const auto& [ value, pos ] = pair;
               debug::out(color::gray) << value << " found = at " << pos << " - extracting ms" << pid_s();
               return pos == std::string::npos
-                          ? std::move(value)
+                          ? value
                           : std::string(value.cbegin() + pos + 1, value.cend());
           })
-        | std::move(append_pid)
+        | append_pid
         | voy_bridge(backend_1_to_backend_2)
 
         | voy::filter([] (const std::string& value) {
               debug::out(color::gray) << value << " - filtering" << pid_s();
               return value < "0.145"s;
           })
-        | std::move(append_pid)
+        | append_pid
         | voy_bridge(backend_2_to_frontend)
 
         | voy::sink{cout};
