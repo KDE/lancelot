@@ -21,7 +21,7 @@
 
 #include "ControllerMessage.h"
 
-#include "protocol.h"
+#include "Protocol.h"
 
 #include <utils/qstringliterals.h>
 
@@ -34,9 +34,9 @@ int main(int argc, char *argv[])
     using blade::QueryMessage;
 
     ControllerMessage cm;
-    cm.host = "Host"_qs;
-    cm.controller = "Cler"_qs;
-    cm.message = QueryMessage{ 1 , "GGG" };
+    cm.host = "Host";
+    cm.controller = "Cler";
+    cm.message = QueryMessage{ 1 , "GGG"_qs };
 
     blade::serialize(cm);
 

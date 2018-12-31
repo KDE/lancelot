@@ -3,3 +3,4 @@ CMakeLists.txt.user*
 *.swp
 /build/
 /3rdparty/
+compile_commands.json

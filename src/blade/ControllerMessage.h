@@ -25,6 +25,7 @@
 #include <variant>
 
 #include <QString>
+#include <QByteArray>
 
 namespace blade {
 
@@ -43,8 +44,8 @@ struct ErrorMessage {
 
 
 struct ControllerMessage {
-    QString host;
-    QString controller;
+    QByteArray host;
+    QByteArray controller;
 
     std::variant<
         PingMessage,

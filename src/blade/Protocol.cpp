@@ -19,7 +19,7 @@
  *   If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "protocol.h"
+#include "Protocol.h"
 
 #include <iostream>
 
@@ -40,8 +40,8 @@ void serialize(const ControllerMessage &msg)
 
     auto cm = builder.initRoot<protocol::ControllerMessage>();
 
-    cm.setHost(msg.host.toUtf8().data());
-    cm.setController(msg.controller.toUtf8().data());
+    cm.setHost(msg.host.data());
+    cm.setController(msg.controller.data());
 
     auto message = cm.initMessage();
 
@@ -49,14 +49,14 @@ void serialize(const ControllerMessage &msg)
         overloaded{
             [&](const PingMessage &) { message.initPing(); },
             [&](const QueryMessage &msg) {
-                auto qm = message.initQuery();
-                qm.setId(msg.id);
-                qm.setText(msg.text.toUtf8().data());
+                auto query = message.initQuery();
+                query.setId(msg.id);
+                query.setText(msg.text.toUtf8().data());
             },
             [&](const ErrorMessage &msg) {
-                auto qm = message.initError();
-                qm.setCode(msg.code);
-                qm.setMessage(msg.message.toUtf8().data());
+                auto error = message.initError();
+                error.setCode(msg.code);
+                error.setMessage(msg.message.toUtf8().data());
             },
         },
         msg.message);

@@ -6,7 +6,7 @@ include_directories (
 set (
     BLADE_COMMON_SRCS
 
-    protocol.cpp
+    Protocol.cpp
     main.cpp
     )
 
