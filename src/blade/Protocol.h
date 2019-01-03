@@ -55,7 +55,7 @@ void writeToStdStream(const ControllerMessage &msg, std::ostream& out_)
     auto message = cm.initMessage();
 
     std::visit(
-        overloaded{
+        overloaded {
             [&](const PingMessage &) { message.initPing(); },
             [&](const QueryMessage &msg) {
                 auto query = message.initQuery();
@@ -117,11 +117,17 @@ blade::ControllerMessage readControllerMessage(const std::string &data)
     } else if (message.hasPing()) {
         result.message = blade::PingMessage{};
 
-    } else {
+    } else if (message.hasError()) {
         auto error = message.getError();
         result.message = blade::ErrorMessage{
             error.getCode(),
             detail::asByteArray(error.getMessage())
+        };
+
+    } else {
+        result.message = blade::ErrorMessage{
+            static_cast<std::uint16_t>(-1),
+            "unknown error"
         };
     }
 

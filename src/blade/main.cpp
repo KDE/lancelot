@@ -19,36 +19,42 @@
  *   If not, see <http://www.gnu.org/licenses/>.
  */
 
+// std, boost
 #include <iostream>
+#include <future>
+#include <boost/thread/thread.hpp>
 
-#include "Protocol.h"
-#include "ControllerMessage.h"
-#include "ui/UiBackend.h"
-
-#include <utils/qstringliterals.h>
-
+// Voy
 #include <voy/basic/sink.h>
 #include <voy/basic/values.h>
 #include <voy/basic/delayed.h>
 
-#include <voy/operations/transform.h>
-
 #include <voy/dsl.h>
-
+#include <voy/operations/transform.h>
+#include <voy/operations/filter.h>
 #include <voy/wrappers/qt/connect.h>
 
+// Qt
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include <QDebug>
 #include <QThread>
 
-#include <future>
+// Blade
+#include "Protocol.h"
+#include "ControllerMessage.h"
+#include "ui/UiBackend.h"
 
-#include <boost/thread/thread.hpp>
+// Utils
+#include <utils/qstringliterals.h>
+#include <utils/overloaded.h>
 
 using namespace std::literals::string_literals;
 using namespace std::literals::chrono_literals;
+
+using namespace voy;
+
 
 class QueryGenerator {
 public:
@@ -62,21 +68,9 @@ private:
     mutable std::uint64_t m_id = 0;
 };
 
+
 int main(int argc, char *argv[])
 {
-    using namespace voy;
-
-    // using blade::ControllerMessage;
-    // using blade::PingMessage;
-    // using blade::QueryMessage;
-    //
-    // ControllerMessage cm;
-    // cm.host = "Host";
-    // cm.controller = "Cler";
-    // cm.message = QueryMessage{ 1 , "GGG"_qs };
-    //
-    // blade::serialize(cm);
-
     QGuiApplication app(argc, argv);
     QQmlApplicationEngine engine;
     UiBackend backend;
@@ -96,6 +90,7 @@ int main(int argc, char *argv[])
 
         auto pipeline =
             qt::signal(&backend, &UiBackend::searchRequested)
+                | remove_if(&QString::isEmpty)
                 | transform(QueryGenerator{})
                 | transform([] (auto&& query) {
                       return blade::ControllerMessage { "42", "0", voy_fwd(query) };
@@ -104,7 +99,18 @@ int main(int argc, char *argv[])
                 | transform(blade::serialization::readControllerMessage)
                 | transform([] (auto&& cm) {
                       qDebug() << cm;
-                      return QString::fromLatin1(cm.host);
+                      return std::visit(
+                          overloaded {
+                              [] (const blade::PingMessage& msg) {
+                                  return "PING"_qs;
+                              },
+                              [] (const blade::QueryMessage& msg) {
+                                  return msg.text;
+                              },
+                              [] (const blade::ErrorMessage& msg) {
+                                  return QString::fromLatin1(msg.message);
+                              }
+                          }, cm.message);
                   })
                 | qt::slot(&backend, &UiBackend::searchFinished);
 

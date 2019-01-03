@@ -42,13 +42,20 @@ PlasmaCore.Dialog {
 
         Connections {
             target: BladeUiBackend
-            onSearchFinished: console.log("Connection valid: " + query)
+            onSearchFinished: {
+                console.log("Connection valid: " + query);
+                title.text = query;
+            }
             onSearchRequested: console.log(" <---- " + query)
         }
 
         PlasmaComponents.TextField {
             Layout.fillWidth: true
             onTextChanged: BladeUiBackend.search(text)
+        }
+
+        PlasmaExtras.Heading {
+            id: title
         }
 
         PlasmaExtras.ScrollArea {
