@@ -26,20 +26,43 @@
 
 #include <QString>
 #include <QByteArray>
+#include <QDebug>
 
 namespace blade {
 
 struct PingMessage {};
+
+inline
+QDebug operator<< (QDebug out, const PingMessage& msg)
+{
+    return out.nospace() << "PingMessage{}";
+}
+
+
 
 struct QueryMessage {
     std::uint64_t id;
     QString text;
 };
 
+inline
+QDebug operator<< (QDebug out, const QueryMessage& msg)
+{
+    return out.nospace() << "QueryMessage{" << msg.id << ", " << msg.text << "}";
+}
+
+
+
 struct ErrorMessage {
     std::uint16_t code;
-    QString message;
+    QByteArray message;
 };
+
+inline
+QDebug operator<< (QDebug out, const ErrorMessage& msg)
+{
+    return out.nospace() << "ErrorMessage{" << msg.code << ", " << msg.message << "}";
+}
 
 
 
@@ -53,6 +76,18 @@ struct ControllerMessage {
         ErrorMessage
     > message;
 };
+
+inline
+QDebug operator<< (QDebug out, const ControllerMessage& cm)
+{
+    out.nospace() << "ControllerMessage{" << cm.host << ", " << cm.controller << "}::";
+    std::visit([&] (const auto &cm) {
+            out.nospace() << cm;
+        }, cm.message);
+    return out;
+}
+
+
 
 } // namespace blade
 

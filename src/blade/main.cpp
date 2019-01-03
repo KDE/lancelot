@@ -30,6 +30,9 @@
 #include <voy/basic/sink.h>
 #include <voy/basic/values.h>
 #include <voy/basic/delayed.h>
+
+#include <voy/operations/transform.h>
+
 #include <voy/dsl.h>
 
 #include <voy/wrappers/qt/connect.h>
@@ -47,38 +50,44 @@
 using namespace std::literals::string_literals;
 using namespace std::literals::chrono_literals;
 
-namespace qt = voy::qt;
+class QueryGenerator {
+public:
+    template <typename T>
+    blade::QueryMessage operator() (T&& value) const
+    {
+        return { m_id, voy_fwd(value) };
+    }
+
+private:
+    mutable std::uint64_t m_id = 0;
+};
 
 int main(int argc, char *argv[])
 {
+    using namespace voy;
+
+    // using blade::ControllerMessage;
+    // using blade::PingMessage;
+    // using blade::QueryMessage;
+    //
+    // ControllerMessage cm;
+    // cm.host = "Host";
+    // cm.controller = "Cler";
+    // cm.message = QueryMessage{ 1 , "GGG"_qs };
+    //
+    // blade::serialize(cm);
+
     QGuiApplication app(argc, argv);
-
-    using blade::ControllerMessage;
-    using blade::PingMessage;
-    using blade::QueryMessage;
-
-    ControllerMessage cm;
-    cm.host = "Host";
-    cm.controller = "Cler";
-    cm.message = QueryMessage{ 1 , "GGG"_qs };
-
-    blade::serialize(cm);
-
     QQmlApplicationEngine engine;
-
-    auto context = engine.rootContext();
-
     UiBackend backend;
 
+    auto context = engine.rootContext();
     context->setContextProperty("BladeUiBackend", &backend);
 
     engine.load(app.arguments()[1]);
+    if (engine.rootObjects().isEmpty()) throw "QML not loaded properly";
 
-    if (engine.rootObjects().isEmpty()) {
-        return -1;
-    }
-
-    boost::thread thread([&backend] {
+    boost::thread voy_thread([&backend] {
         auto cout = [] (auto&& value) {
             qDebug() << "SINK: " << value;
         };
@@ -86,9 +95,18 @@ int main(int argc, char *argv[])
         using voy::dsl::operator|;
 
         auto pipeline =
-            qt::signal(&backend, &UiBackend::searchRequested) |
-                qt::slot(&backend, &UiBackend::searchFinished);
-                // | voy::sink{cout};
+            qt::signal(&backend, &UiBackend::searchRequested)
+                | transform(QueryGenerator{})
+                | transform([] (auto&& query) {
+                      return blade::ControllerMessage { "42", "0", voy_fwd(query) };
+                  })
+                | transform(blade::serialization::asStdString)
+                | transform(blade::serialization::readControllerMessage)
+                | transform([] (auto&& cm) {
+                      qDebug() << cm;
+                      return QString::fromLatin1(cm.host);
+                  })
+                | qt::slot(&backend, &UiBackend::searchFinished);
 
         voy::event_loop::run();
     });

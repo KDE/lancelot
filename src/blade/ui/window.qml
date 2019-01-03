@@ -43,6 +43,7 @@ PlasmaCore.Dialog {
         Connections {
             target: BladeUiBackend
             onSearchFinished: console.log("Connection valid: " + query)
+            onSearchRequested: console.log(" <---- " + query)
         }
 
         PlasmaComponents.TextField {
