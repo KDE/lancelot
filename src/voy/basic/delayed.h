@@ -93,6 +93,8 @@ namespace detail {
                         base::emit(std::move(value));
                     }
 
+                    m_values.clear();
+
                     base::notify_ended();
                 });
             }

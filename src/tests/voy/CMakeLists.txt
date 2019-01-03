@@ -2,6 +2,8 @@
 message ("Voy source dir: ${VOY_SOURCE_DIR}")
 message ("Voy sources:    ${VOY_SOURCES}")
 
+# Simple tests
+
 foreach (
         test_name IN ITEMS
         VALUES_TEST
@@ -42,6 +44,8 @@ foreach (
 
 endforeach()
 
+# Multiprocess test
+
 foreach (
         test_name IN ITEMS
         TEST_FRONTEND
@@ -73,19 +77,22 @@ foreach (
 
 endforeach()
 
-# add_executable (
-#     voy_test_process_1
-#     tests_multiprocess.cpp
-#
-#     engine/asio/service.cpp
-#     )
-#
-# target_link_libraries (
-#     voy_test_process_1
-#     ${Boost_SYSTEM_LIBRARY}
-#     ${Boost_FILESYSTEM_LIBRARY}
-#     ${Boost_REGEX_LIBRARY}
-#     ${ZMQ_LIBRARIES}
-#     -pthread
-#     )
+
+# Separate-thread test
+
+add_executable (
+    "voy_test_separate_thread"
+    ${VOY_SOURCES}
+    tests_thread.cpp
+    )
+
+target_link_libraries (
+    "voy_test_separate_thread"
+    ${Boost_SYSTEM_LIBRARY}
+    ${Boost_FILESYSTEM_LIBRARY}
+    ${Boost_REGEX_LIBRARY}
+    ${Boost_THREAD_LIBRARY}
+    ${ZMQ_LIBRARIES}
+    -pthread
+    )
 

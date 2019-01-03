@@ -19,20 +19,25 @@
  *   If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "service.h"
+#ifndef BLADE_UIBACKEND_H
+#define BLADE_UIBACKEND_H
 
-namespace voy::engine::asio {
+#include <QObject>
 
-service& service::instance()
-{
-    static service s_instance;
-    return s_instance;
-}
+class UiBackend: public QObject {
+    Q_OBJECT
 
-void service::run()
-{
-    m_asio_service.run();
-}
+public Q_SLOTS:
+    void search(const QString &query);
 
-} // namespace voy::transport::asio
+Q_SIGNALS:
+    void searchRequested(const QString &query);
+
+    void searchFinished(const QString &query);
+
+private:
+
+};
+
+#endif // include guard
 

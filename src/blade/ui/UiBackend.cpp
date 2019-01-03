@@ -19,20 +19,12 @@
  *   If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "service.h"
+#include "UiBackend.h"
 
-namespace voy::engine::asio {
+#include <QDebug>
 
-service& service::instance()
+void UiBackend::search(const QString &query)
 {
-    static service s_instance;
-    return s_instance;
+    Q_EMIT searchRequested(query);
 }
-
-void service::run()
-{
-    m_asio_service.run();
-}
-
-} // namespace voy::transport::asio
 

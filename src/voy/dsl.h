@@ -263,7 +263,7 @@ template < typename Left
                is_node<Left> && is_node<Right>
            )
          >
-decltype(auto) operator| (Left&& left, Right&& right)
+[[nodiscard]] decltype(auto) operator| (Left&& left, Right&& right)
 {
     return detail::connect_streams(voy_fwd(left), voy_fwd(right));
 }

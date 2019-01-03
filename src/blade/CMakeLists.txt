@@ -7,6 +7,11 @@ set (
     BLADE_COMMON_SRCS
 
     Protocol.cpp
+
+    ui/UiBackend.cpp
+
+    ${VOY_SOURCES}
+
     main.cpp
     )
 
@@ -36,7 +41,15 @@ add_executable (
 
 target_link_libraries (
     bladed
-    ${capnp_LIBRARIES}
-    ${ZMQ_LIBRARIES}
     Qt5::Core
+    Qt5::Quick
+
+    ${capnp_LIBRARIES}
+
+    ${Boost_SYSTEM_LIBRARY}
+    ${Boost_FILESYSTEM_LIBRARY}
+    ${Boost_REGEX_LIBRARY}
+    ${Boost_THREAD_LIBRARY}
+    ${ZMQ_LIBRARIES}
+    -pthread
     )

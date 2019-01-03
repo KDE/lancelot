@@ -6,7 +6,7 @@ set (PROJECT_VERSION "0.1")
 set (PROJECT_VERSION_MAJOR 0)
 
 set (CMAKE_CXX_STANDARD 17)
-add_definitions (-fexceptions -pthread)
+add_definitions (-fexceptions -pthread -Werror=unused-result)
 
 
 
@@ -57,14 +57,14 @@ find_package (
     KF5 REQUIRED
     COMPONENTS Service I18n Baloo Activities Config CoreAddons
     )
-
+add_definitions(-DQT_NO_KEYWORDS)
 
 
 # Boost ASIO is needed for the reactive streams event processing
 
 find_package (
     Boost 1.67 REQUIRED
-    COMPONENTS system filesystem regex # asio and process are header-only
+    COMPONENTS system filesystem regex thread # asio and process are header-only
     )
 include_directories (${Boost_INCLUDE_DIR})
 

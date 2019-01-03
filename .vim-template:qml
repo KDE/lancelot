@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2018 Ivan Čukić <ivan.cukic(at)kde.org>
+ *   Copyright (C) %YEAR% %USER% <%MAIL%>
  *
  *   This library is free software; you can redistribute it and/or
  *   modify it under the terms of the GNU Lesser General Public
@@ -19,20 +19,10 @@
  *   If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "service.h"
+import QtQuick 2.9
 
-namespace voy::engine::asio {
+Item {
+    id: root
 
-service& service::instance()
-{
-    static service s_instance;
-    return s_instance;
 }
-
-void service::run()
-{
-    m_asio_service.run();
-}
-
-} // namespace voy::transport::asio
 
