@@ -1,6 +1,7 @@
 CMakeLists.txt.user*
 *.kdev4
 *.swp
+*.qmlc
 /build/
 /3rdparty/
 compile_commands.json
