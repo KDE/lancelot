@@ -21,6 +21,8 @@
 
 #include "service.h"
 
+#include <iostream>
+
 namespace voy::engine::asio {
 
 service& service::instance()
@@ -31,6 +33,7 @@ service& service::instance()
 
 void service::run()
 {
+    boost::asio::io_service::work keep_alive(m_asio_service);
     m_asio_service.run();
 }
 

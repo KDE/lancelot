@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2018 Ivan Čukić <ivan.cukic(at)kde.org>
+ *   Copyright (C) 2019 Ivan Čukić <ivan.cukic(at)kde.org>
  *
  *   This library is free software; you can redistribute it and/or
  *   modify it under the terms of the GNU Lesser General Public
@@ -19,12 +19,13 @@
  *   If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef VOY_BASIC_DELAYED_H
-#define VOY_BASIC_DELAYED_H
+#ifndef VOY_DEBOUNCE_H
+#define VOY_DEBOUNCE_H
 
 // STL
 #include <chrono>
 #include <optional>
+#include <iostream>
 
 // Boost
 #include <boost/asio.hpp>
@@ -46,22 +47,14 @@ using voy::dsl::continuator_base,
 namespace detail {
 
     template <typename T>
-    class delayed_impl: non_copyable {
+    class debounce_impl: non_copyable {
         voy_assert_value_type(T);
 
     public:
-        using node_category = source_node_tag;
+        using node_category = transformation_node_tag;
 
-        explicit delayed_impl(std::chrono::milliseconds delay, std::initializer_list<T> c)
+        explicit debounce_impl(std::chrono::milliseconds delay)
             : m_delay{delay}
-            , m_values{c}
-        {
-        }
-
-        template <typename C>
-        explicit delayed_impl(std::chrono::milliseconds delay, C&& c)
-            : m_delay{delay}
-            , m_values{voy_fwd(c)}
         {
         }
 
@@ -70,58 +63,61 @@ namespace detail {
             using base = continuator_base<Cont>;
 
         public:
-            using value_type = T;
-
-            node(std::chrono::milliseconds delay, std::vector<T>&& values, Cont&& cont)
+            node(std::chrono::milliseconds delay, Cont&& cont)
                 : base{std::move(cont)}
                 , m_delay{delay}
-                , m_values{std::move(values)}
             {
             }
 
-            node(node&& other) = default;
+            // node(node&& other) = default;
+            node(node&& other) noexcept
+                : base(std::move(other))
+                , m_delay{other.m_delay}
+            {
+            }
 
             void init()
             {
                 base::init();
 
                 m_delay_timer = boost::asio::steady_timer(
-                        engine::asio::service::instance(), m_delay);
+                        engine::asio::service::instance());
+            }
 
-                m_delay_timer->async_wait([this] (const boost::system::error_code& e) {
-                    for (auto&& value: m_values) {
-                        base::emit(std::move(value));
-                    }
+            void operator() (T&& value) const
+            {
+                m_last_value = std::move(value);
+                using namespace std::literals::chrono_literals;
 
-                    m_values.clear();
-
-                    base::notify_ended();
+                m_delay_timer->expires_after(m_delay);
+                m_delay_timer->async_wait([this] (const boost::system::error_code& error) {
+                    if (error) return;
+                    base::emit(std::move(m_last_value));
                 });
             }
 
         private:
             std::chrono::milliseconds m_delay;
-            std::vector<T> m_values;
-            std::optional<boost::asio::steady_timer> m_delay_timer;
+            mutable std::optional<boost::asio::steady_timer> m_delay_timer;
+            mutable T m_last_value;
         };
 
         template <typename Cont>
         auto with_continuation(Cont&& cont) &&
         {
-            return node<Cont>(m_delay, std::move(m_values), voy_fwd(cont));
+            return node<Cont>(m_delay, voy_fwd(cont));
         }
 
     private:
         std::chrono::milliseconds m_delay;
-        std::vector<T> m_values;
     };
 
 } // namespace detail
 
 template<typename T>
-decltype(auto) delayed(std::chrono::milliseconds delay, T&& value)
+decltype(auto) debounce(std::chrono::milliseconds delay)
 {
-    return detail::delayed_impl<T>(delay, {voy_fwd(value)});
+    return detail::debounce_impl<T>(delay);
 }
 
 } // namespace voy

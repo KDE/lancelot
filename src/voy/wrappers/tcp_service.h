@@ -57,7 +57,7 @@ public:
     }
 
     template <typename Cont>
-    class node: continuator_base<Cont>, non_copyable {
+    class node: public continuator_base<Cont>, non_copyable {
         using base = continuator_base<Cont>;
 
     private:

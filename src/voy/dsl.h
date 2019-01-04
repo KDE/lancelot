@@ -72,7 +72,7 @@ namespace detail {
 
 
     // In order to use the fold expressions, we need to provide an operator
-    // on which to fold. We can create a wrapper type with operator<<
+    // on which to fold. We can create a wrapper type with operator%
     // defined for it
     template <typename Node>
     struct node_wrapper: utils::non_copyable {
@@ -104,8 +104,8 @@ namespace detail {
 
 
     template <typename Left, typename Right>
-    decltype(auto) operator<< (node_wrapper<Left>&& receiver,
-                               node_wrapper<Right>&& sender)
+    decltype(auto) operator% (node_wrapper<Left>&& receiver,
+                              node_wrapper<Right>&& sender)
     {
         voy_assert_value_type(Left);
         voy_assert_value_type(Right);
@@ -122,8 +122,8 @@ namespace detail {
                               std::index_sequence<Idx...>)
     {
         return std::make_unique<
-                decltype(pipeline_impl((... << make_node_wrapper(std::get<Idx>(std::move(items))))))
-            > ((... << make_node_wrapper(std::get<Idx>(std::move(items)))));
+                decltype(pipeline_impl((... % make_node_wrapper(std::get<Idx>(std::move(items))))))
+            > ((... % make_node_wrapper(std::get<Idx>(std::move(items)))));
     }
 
 

@@ -32,6 +32,7 @@
 #include <voy/dsl.h>
 #include <voy/operations/transform.h>
 #include <voy/operations/filter.h>
+#include <voy/operations/debounce.h>
 #include <voy/wrappers/qt/connect.h>
 
 // Qt
@@ -91,6 +92,7 @@ int main(int argc, char *argv[])
         auto pipeline =
             qt::signal(&backend, &UiBackend::searchRequested)
                 | remove_if(&QString::isEmpty)
+                | debounce<QString>(200ms)
                 | transform(QueryGenerator{})
                 | transform([] (auto&& query) {
                       return blade::ControllerMessage { "42", "0", voy_fwd(query) };
