@@ -33,10 +33,7 @@
 #include <kj/std/iostream.h>
 
 #include <utils/overloaded.h>
-
-#include <sstream>
-
-#include <algorithm>
+using std_ex::overloaded;
 
 #include "protocol/controller_message.capnp.h"
 

@@ -50,6 +50,10 @@
 // Utils
 #include <utils/qstringliterals.h>
 #include <utils/overloaded.h>
+#include <utils/constructor_fn.h>
+#include <utils/bind_front.h>
+using std_ex::overloaded;
+using std_ex::bind_front;
 
 using namespace std::literals::string_literals;
 using namespace std::literals::chrono_literals;
@@ -94,9 +98,7 @@ int main(int argc, char *argv[])
                 | remove_if(&QString::isEmpty)
                 | debounce<QString>(200ms)
                 | transform(QueryGenerator{})
-                | transform([] (auto&& query) {
-                      return blade::ControllerMessage { "42", "0", voy_fwd(query) };
-                  })
+                | transform(bind_front(initialize<blade::ControllerMessage>{}, "42", "0"))
                 | transform(blade::serialization::asStdString)
                 | transform(blade::serialization::readControllerMessage)
                 | transform([] (auto&& cm) {

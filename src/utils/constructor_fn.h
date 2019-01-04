@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2018 Ivan Čukić <ivan.cukic(at)kde.org>
+ *   Copyright (C) 2019 Ivan Čukić <ivan.cukic(at)kde.org>
  *
  *   This library is free software; you can redistribute it and/or
  *   modify it under the terms of the GNU Lesser General Public
@@ -19,20 +19,30 @@
  *   If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef UTILS_OVERLOADED_H
-#define UTILS_OVERLOADED_H
+#ifndef UTILS_CONSTRUCTOR_FN_H
+#define UTILS_CONSTRUCTOR_FN_H
 
-namespace std_ex {
+#include <type_traits>
 
-template <typename... Ops>
-struct overloaded: Ops... {
-    using Ops::operator()...;
+template <typename R>
+struct construct {
+    template <typename... Args>
+    R operator() (Args&&... args) const
+        noexcept(std::is_nothrow_constructible_v<R, Args&&...>)
+    {
+        return R(std::forward<Args>(args)...);
+    }
 };
 
-template <typename... Ops>
-overloaded(Ops...) -> overloaded<Ops...>;
-
-} // namespace std_ex
+template <typename R>
+struct initialize {
+    template <typename... Args>
+    R operator() (Args&&... args) const
+        noexcept(std::is_nothrow_constructible_v<R, Args&&...>)
+    {
+        return R{std::forward<Args>(args)...};
+    }
+};
 
 #endif // include guard
 
