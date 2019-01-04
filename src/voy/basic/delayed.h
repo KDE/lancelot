@@ -124,6 +124,19 @@ decltype(auto) delayed(std::chrono::milliseconds delay, T&& value)
     return detail::delayed_impl<T>(delay, {voy_fwd(value)});
 }
 
+template<typename T>
+decltype(auto) delayed_values(std::chrono::seconds delay, T&& values)
+{
+    return detail::delayed_impl<typename T::value_type>(delay, voy_fwd(values));
+}
+
+template<typename T>
+decltype(auto) delayed_values(std::chrono::seconds delay, std::initializer_list<T> values)
+{
+    return detail::delayed_impl<T>(delay, std::move(values));
+}
+
+
 } // namespace voy
 
 #endif // include guard
