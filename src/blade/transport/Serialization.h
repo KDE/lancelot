@@ -35,7 +35,7 @@
 #include <utils/overloaded.h>
 using std_ex::overloaded;
 
-#include "protocol/controller_message.capnp.h"
+#include "transport/protocol/controller_message.capnp.h"
 
 namespace blade::serialization {
 

@@ -6,7 +6,7 @@ include_directories (
 set (
     BLADE_COMMON_SRCS
 
-    Protocol.cpp
+    transport/Serialization.cpp
 
     ui/UiBackend.cpp
 
@@ -26,11 +26,11 @@ endif()
 capnp_generate_cpp (
     BLADE_CAPNP_SRCS BLADE_CAPNP_HEADERS
 
-    protocol/ping_message.capnp
-    protocol/query_message.capnp
-    protocol/error_message.capnp
+    transport/protocol/ping_message.capnp
+    transport/protocol/query_message.capnp
+    transport/protocol/error_message.capnp
 
-    protocol/controller_message.capnp
+    transport/protocol/controller_message.capnp
     )
 
 add_executable (

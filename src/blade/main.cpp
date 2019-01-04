@@ -43,8 +43,9 @@
 #include <QThread>
 
 // Blade
-#include "Protocol.h"
-#include "ControllerMessage.h"
+#include "transport/Serialization.h"
+namespace s11n = blade::serialization;
+#include "transport/ControllerMessage.h"
 #include "ui/UiBackend.h"
 
 // Utils
@@ -99,8 +100,8 @@ int main(int argc, char *argv[])
                 | debounce<QString>(200ms)
                 | transform(QueryGenerator{})
                 | transform(bind_front(initialize<blade::ControllerMessage>{}, "42", "0"))
-                | transform(blade::serialization::asStdString)
-                | transform(blade::serialization::readControllerMessage)
+                | transform(s11n::asStdString)
+                | transform(s11n::readControllerMessage)
                 | transform([] (auto&& cm) {
                       qDebug() << cm;
                       return std::visit(
