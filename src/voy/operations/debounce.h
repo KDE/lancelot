@@ -42,7 +42,7 @@ namespace voy {
 using voy::utils::non_copyable;
 
 using voy::dsl::continuator_base,
-      voy::dsl::source_node_tag;
+      voy::dsl::transformation_node_tag;
 
 namespace detail {
 
@@ -71,7 +71,7 @@ namespace detail {
 
             // node(node&& other) = default;
             node(node&& other) noexcept
-                : base(std::move(other))
+                : base{std::move(other)}
                 , m_delay{other.m_delay}
             {
             }

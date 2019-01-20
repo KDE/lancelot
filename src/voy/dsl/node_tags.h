@@ -40,7 +40,7 @@ struct sink_node_tag {};       // node that only receives messages
 
 struct transformation_node_tag {}; // middle node that defines transformations
                                    // this one does not force establishing
-                                   // connectiond
+                                   // connection
 
 template <typename Cont>
 class continuator_base {

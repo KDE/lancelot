@@ -44,9 +44,9 @@
 
 // Blade
 #include "transport/Serialization.h"
-namespace s11n = blade::serialization;
 #include "transport/ControllerMessage.h"
 #include "ui/UiBackend.h"
+namespace s11n = blade::serialization;
 
 // Utils
 #include <utils/qstringliterals.h>
@@ -55,6 +55,10 @@ namespace s11n = blade::serialization;
 #include <utils/bind_front.h>
 using std_ex::overloaded;
 using std_ex::bind_front;
+
+// Runners
+#include "runners/AbstractRunner.h"
+#include "runners/plugins/services/ServicesRunner.h"
 
 using namespace std::literals::string_literals;
 using namespace std::literals::chrono_literals;
@@ -67,6 +71,7 @@ public:
     template <typename T>
     blade::QueryMessage operator() (T&& value) const
     {
+        ++m_id;
         return { m_id, voy_fwd(value) };
     }
 
@@ -75,10 +80,32 @@ private:
 };
 
 
+class RunnerManager {
+    using runners_t = std::vector<std::unique_ptr<AbstractRunner>>;
+
+public:
+    RunnerManager()
+    {
+        m_runners.emplace_back(std::make_unique<ServicesRunner>());
+    }
+
+    void runQuery(const QString &queryString)
+    {
+        for (const auto& runner: m_runners) {
+            runner->runQuery(queryString);
+        }
+    }
+
+private:
+    runners_t m_runners;
+};
+
+
 int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
     QQmlApplicationEngine engine;
+
     UiBackend backend;
 
     auto context = engine.rootContext();
@@ -92,6 +119,8 @@ int main(int argc, char *argv[])
             qDebug() << "SINK: " << value;
         };
 
+        RunnerManager rm;
+
         using voy::dsl::operator|;
 
         auto pipeline =
@@ -100,8 +129,8 @@ int main(int argc, char *argv[])
                 | debounce<QString>(200ms)
                 | transform(QueryGenerator{})
                 | transform(bind_front(initialize<blade::ControllerMessage>{}, "42", "0"))
-                | transform(s11n::asStdString)
-                | transform(s11n::readControllerMessage)
+                // | transform(s11n::asStdString)
+                // | transform(s11n::readControllerMessage)
                 | transform([] (auto&& cm) {
                       qDebug() << cm;
                       return std::visit(
@@ -117,7 +146,9 @@ int main(int argc, char *argv[])
                               }
                           }, cm.message);
                   })
-                | qt::slot(&backend, &UiBackend::searchFinished);
+                | sink([] (auto&& value) { qDebug() << "Generated:" << value; })
+                ;
+                // | qt::slot(&backend, &UiBackend::searchFinished);
 
         voy::event_loop::run();
     });

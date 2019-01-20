@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=ServiceType
+X-KDE-ServiceType=Blade/RunnerPlugin
+
+Comment=Blade Runner plugin
+
+[PropertyDef::X-Blade-Runner-Remote]
+Type=QString
+

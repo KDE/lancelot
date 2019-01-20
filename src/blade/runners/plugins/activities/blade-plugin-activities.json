@@ -1,0 +1,26 @@
+{
+    "KPlugin": {
+        "Authors": [
+            {
+                "Email": "ivan.cukic@kde.org",
+                "Name": "Ivan Čukić",
+                "Name[sr@ijekavian]": "Иван Чукић",
+                "Name[sr]": "Иван Чукић",
+                "Name[x-test]": "xxIvan Čukićxx"
+            }
+        ],
+        "Category": "",
+        "Dependencies": [],
+        "Description": "Runner that searches for activities",
+        "EnabledByDefault": true,
+        "Icon": "preferences-activities",
+        "Id": "org.kde.plasma.blade.Activities",
+        "License": "GPL",
+        "Name": "Activities",
+        "ServiceTypes": [
+            "Blade/Plugin"
+        ],
+        "Version": "1.0",
+        "Website": "http://plasma.kde.org/"
+    }
+}
