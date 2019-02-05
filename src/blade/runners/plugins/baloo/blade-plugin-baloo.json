@@ -3,17 +3,41 @@
         "Authors": [
             {
                 "Email": "ivan.cukic@kde.org",
-                "Name": "Ivan Čukić"
+                "Name": "Ivan Čukić",
+                "Name[ca@valencia]": "Ivan Čukić",
+                "Name[ca]": "Ivan Čukić",
+                "Name[gl]": "Ivan Čukić",
+                "Name[nl]": "Ivan Čukić",
+                "Name[pt]": "Ivan Čukić",
+                "Name[sv]": "Ivan Čukić",
+                "Name[uk]": "Ivan Čukić",
+                "Name[x-test]": "xxIvan Čukićxx"
             }
         ],
         "Category": "",
         "Dependencies": [],
         "Description": "Runner that searches contents of files",
+        "Description[ca@valencia]": "Executor que cerca en el contingut dels fitxers",
+        "Description[ca]": "Executor que cerca en el contingut dels fitxers",
+        "Description[gl]": "Executor que busca nos contidos de ficheiros",
+        "Description[nl]": "Runner die de inhoud van bestanden doorzoekt",
+        "Description[pt]": "Módulo de execução que pesquisa no conteúdo dos ficheiros",
+        "Description[sv]": "Körprogram som söker igenom innehåll i filer",
+        "Description[uk]": "Засіб запуску, який шукає у вмісті файлів",
+        "Description[x-test]": "xxRunner that searches contents of filesxx",
         "EnabledByDefault": true,
         "Icon": "baloo",
         "Id": "org.kde.plasma.blade.Baloo",
         "License": "GPL",
         "Name": "Baloo file search",
+        "Name[ca@valencia]": "Cerca de fitxers de Baloo",
+        "Name[ca]": "Cerca de fitxers de Baloo",
+        "Name[gl]": "Busca de ficheiros de Baloo",
+        "Name[nl]": "Bestanden zoeken met Baloo",
+        "Name[pt]": "Pesquisa de ficheiros no Baloo",
+        "Name[sv]": "Baloo-filsökning",
+        "Name[uk]": "Пошук у файлах Baloo",
+        "Name[x-test]": "xxBaloo file searchxx",
         "ServiceTypes": [
             "Blade/Plugin"
         ],

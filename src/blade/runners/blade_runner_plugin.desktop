@@ -3,6 +3,14 @@ Type=ServiceType
 X-KDE-ServiceType=Blade/RunnerPlugin
 
 Comment=Blade Runner plugin
+Comment[ca]=Connector de Blade Runner
+Comment[ca@valencia]=Connector de Blade Runner
+Comment[gl]=Complemento de Blade Runner
+Comment[nl]=Plug-in voor Blade Runner
+Comment[pt]='Plugin' de Execução do Blade
+Comment[sv]=Blade Runner-insticksprogram
+Comment[uk]=Додаток Blade Runner
+Comment[x-test]=xxBlade Runner pluginxx
 
 [PropertyDef::X-Blade-Runner-Remote]
 Type=QString

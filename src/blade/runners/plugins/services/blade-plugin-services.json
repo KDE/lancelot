@@ -3,17 +3,41 @@
         "Authors": [
             {
                 "Email": "ivan.cukic@kde.org",
-                "Name": "Ivan Čukić"
+                "Name": "Ivan Čukić",
+                "Name[ca@valencia]": "Ivan Čukić",
+                "Name[ca]": "Ivan Čukić",
+                "Name[gl]": "Ivan Čukić",
+                "Name[nl]": "Ivan Čukić",
+                "Name[pt]": "Ivan Čukić",
+                "Name[sv]": "Ivan Čukić",
+                "Name[uk]": "Ivan Čukić",
+                "Name[x-test]": "xxIvan Čukićxx"
             }
         ],
         "Category": "",
         "Dependencies": [],
         "Description": "Runner that searches for applications and other services",
+        "Description[ca@valencia]": "Executor que cerca per les aplicacions i altres serveis",
+        "Description[ca]": "Executor que cerca per les aplicacions i altres serveis",
+        "Description[gl]": "Executor que busca aplicativos e outros servizos",
+        "Description[nl]": "Runner die zoekt naar toepassingen en andere services",
+        "Description[pt]": "Módulo de execução que pesquisa por aplicações e outros serviços",
+        "Description[sv]": "Körprogram som söker efter program och andra tjänster",
+        "Description[uk]": "Засіб запуску для пошуку програм та інших служб",
+        "Description[x-test]": "xxRunner that searches for applications and other servicesxx",
         "EnabledByDefault": true,
         "Icon": "service",
         "Id": "org.kde.plasma.blade.Services",
         "License": "GPL",
         "Name": "Services",
+        "Name[ca@valencia]": "Serveis",
+        "Name[ca]": "Serveis",
+        "Name[gl]": "Servizos",
+        "Name[nl]": "Services",
+        "Name[pt]": "Serviços",
+        "Name[sv]": "Tjänster",
+        "Name[uk]": "Служби",
+        "Name[x-test]": "xxServicesxx",
         "ServiceTypes": [
             "Blade/Plugin"
         ],
