@@ -13,6 +13,7 @@ Comment[pt]='Plugin' de Execução do Blade
 Comment[sv]=Blade Runner-insticksprogram
 Comment[uk]=Додаток Blade Runner
 Comment[x-test]=xxBlade Runner pluginxx
+Comment[zh_TW]=Blade 執行器外掛程式
 
 [PropertyDef::X-Blade-Runner-Remote]
 Type=QString

@@ -14,7 +14,8 @@
                 "Name[pt]": "Ivan Čukić",
                 "Name[sv]": "Ivan Čukić",
                 "Name[uk]": "Ivan Čukić",
-                "Name[x-test]": "xxIvan Čukićxx"
+                "Name[x-test]": "xxIvan Čukićxx",
+                "Name[zh_TW]": "Ivan Čukić"
             }
         ],
         "Category": "",
@@ -29,6 +30,7 @@
         "Description[sv]": "Körprogram som söker igenom innehåll i filer",
         "Description[uk]": "Засіб запуску, який шукає у вмісті файлів",
         "Description[x-test]": "xxRunner that searches contents of filesxx",
+        "Description[zh_TW]": "可用來搜尋檔案內容的執行器",
         "EnabledByDefault": true,
         "Icon": "recoll",
         "Id": "org.kde.plasma.blade.Recoll",
@@ -43,6 +45,7 @@
         "Name[sv]": "Recoll-filsökning",
         "Name[uk]": "Пошук у файлах Recoll",
         "Name[x-test]": "xxRecoll file searchxx",
+        "Name[zh_TW]": "Recoll 檔案搜尋",
         "ServiceTypes": [
             "Blade/Plugin"
         ],
