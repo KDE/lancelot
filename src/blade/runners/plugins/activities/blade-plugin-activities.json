@@ -34,6 +34,7 @@
         "Description[ca]": "Executor que cerca per les activitats",
         "Description[es]": "Ejecutor que busca actividades",
         "Description[et]": "Käivitaja, mis otsib tegevusi",
+        "Description[fr]": "Module « Runner » recherchant des activités",
         "Description[gl]": "Executor que busca actividades",
         "Description[it]": "Esecutore che cerca le attività",
         "Description[ko]": "활동을 검색하는 실행기",
