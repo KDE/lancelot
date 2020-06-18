@@ -25,6 +25,7 @@
                 "Name[sl]": "Ivan Čukić",
                 "Name[sv]": "Ivan Čukić",
                 "Name[uk]": "Ivan Čukić",
+                "Name[x-test]": "xxIvan Čukićxx",
                 "Name[zh_TW]": "Ivan Čukić"
             }
         ],
@@ -48,6 +49,7 @@
         "Description[sl]": "Runner, ki išče dejavnosti",
         "Description[sv]": "Körprogram som söker efter aktiviteter",
         "Description[uk]": "Засіб запуску для пошуку просторів дій",
+        "Description[x-test]": "xxRunner that searches for activitiesxx",
         "Description[zh_TW]": "可用來搜尋活動的執行器",
         "EnabledByDefault": true,
         "Icon": "preferences-activities",
@@ -74,6 +76,7 @@
         "Name[sl]": "Dejavnosti",
         "Name[sv]": "Aktiviteter",
         "Name[uk]": "Простори дій",
+        "Name[x-test]": "xxActivitiesxx",
         "Name[zh_TW]": "活動",
         "ServiceTypes": [
             "Blade/Plugin"
