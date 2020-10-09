@@ -36,6 +36,7 @@
         "Description": "Runner that searches contents of files",
         "Description[ca@valencia]": "Executor que cerca en el contingut dels fitxers",
         "Description[ca]": "Executor que cerca en el contingut dels fitxers",
+        "Description[de]": "Programmmodul für die Suche nach Dateiinhalten",
         "Description[en_GB]": "Runner that searches contents of files",
         "Description[es]": "Ejecutor que busca en los contenidos de los archivos",
         "Description[et]": "Käivitaja, mis otsib failide sisust",
