@@ -18,7 +18,6 @@ set (
 
 kcoreaddons_add_plugin (
    blade_plugin_services
-   JSON blade-plugin-services.json
    SOURCES ${blade_services_SRCS}
    INSTALL_NAMESPACE ${BLADE_PLUGIN_DIR}
    )

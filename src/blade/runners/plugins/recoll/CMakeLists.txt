@@ -22,7 +22,6 @@ set (
 
 kcoreaddons_add_plugin (
    blade_plugin_recoll
-   JSON blade-plugin-recoll.json
    SOURCES ${blade_recoll_SRCS}
    INSTALL_NAMESPACE ${BLADE_PLUGIN_DIR}
    )

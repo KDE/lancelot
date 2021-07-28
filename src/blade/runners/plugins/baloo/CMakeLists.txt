@@ -18,7 +18,6 @@ set (
 
 kcoreaddons_add_plugin (
    blade_plugin_baloo
-   JSON blade-plugin-baloo.json
    SOURCES ${blade_baloo_SRCS}
    INSTALL_NAMESPACE ${BLADE_PLUGIN_DIR}
    )
