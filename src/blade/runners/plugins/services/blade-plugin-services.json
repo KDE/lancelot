@@ -31,6 +31,7 @@
                 "Name[sv]": "Ivan Čukić",
                 "Name[uk]": "Ivan Čukić",
                 "Name[x-test]": "xxIvan Čukićxx",
+                "Name[zh_CN]": "Ivan Čukić",
                 "Name[zh_TW]": "Ivan Čukić"
             }
         ],
@@ -61,6 +62,7 @@
         "Description[sv]": "Körprogram som söker efter program och andra tjänster",
         "Description[uk]": "Засіб запуску для пошуку програм та інших служб",
         "Description[x-test]": "xxRunner that searches for applications and other servicesxx",
+        "Description[zh_CN]": "搜索应用程序和其他服务的 Runner 程序",
         "Description[zh_TW]": "可用來搜尋應用程式和其他服務的執行器",
         "EnabledByDefault": true,
         "Icon": "service",
@@ -93,6 +95,7 @@
         "Name[sv]": "Tjänster",
         "Name[uk]": "Служби",
         "Name[x-test]": "xxServicesxx",
+        "Name[zh_CN]": "服务",
         "Name[zh_TW]": "服務",
         "ServiceTypes": [
             "Blade/Plugin"
