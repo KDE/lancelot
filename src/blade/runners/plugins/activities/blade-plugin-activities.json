@@ -38,7 +38,7 @@
         "Category": "",
         "Dependencies": [],
         "Description": "Runner that searches for activities",
-        "Description[ca@valencia]": "Executor que cerca per les activitats",
+        "Description[ca@valencia]": "Executor que busca per les activitats",
         "Description[ca]": "Executor que cerca per les activitats",
         "Description[de]": "Programmmodul für die Suche nach Aktivitäten",
         "Description[en_GB]": "Runner that searches for activities",
