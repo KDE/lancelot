@@ -40,7 +40,7 @@
         "Category": "",
         "Dependencies": [],
         "Description": "Runner that searches for applications and other services",
-        "Description[ca@valencia]": "Executor que busca per les aplicacions i atres serveis",
+        "Description[ca@valencia]": "Executor que busca per les aplicacions i altres serveis",
         "Description[ca]": "Executor que cerca per les aplicacions i altres serveis",
         "Description[de]": "Programmmodul für die Suche nach Programmen und anderen Diensten",
         "Description[en_GB]": "Runner that searches for applications and other services",
