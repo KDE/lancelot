@@ -33,7 +33,6 @@
                 "Name[sv]": "Ivan Čukić",
                 "Name[tr]": "Ivan Čukić",
                 "Name[uk]": "Ivan Čukić",
-                "Name[x-test]": "xxIvan Čukićxx",
                 "Name[zh_CN]": "Ivan Čukić",
                 "Name[zh_TW]": "Ivan Čukić"
             }
@@ -67,7 +66,6 @@
         "Description[sv]": "Körprogram som söker igenom innehåll i filer",
         "Description[tr]": "Dosya içeriğini arayan çalıştırıcı",
         "Description[uk]": "Засіб запуску, який шукає у вмісті файлів",
-        "Description[x-test]": "xxRunner that searches contents of filesxx",
         "Description[zh_CN]": "搜素文件内容的 Runner 程序",
         "Description[zh_TW]": "可用來搜尋檔案內容的執行器",
         "EnabledByDefault": true,
@@ -103,7 +101,6 @@
         "Name[sv]": "Baloo-filsökning",
         "Name[tr]": "Baloo dosya arama",
         "Name[uk]": "Пошук у файлах Baloo",
-        "Name[x-test]": "xxBaloo file searchxx",
         "Name[zh_CN]": "Baloo 文件搜索",
         "Name[zh_TW]": "Baloo 檔案搜尋",
         "ServiceTypes": [
